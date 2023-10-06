@@ -29,7 +29,7 @@ def make_http_request(url: str):
         print("Ocorreu um erro:", str(erro))
         return None
 
-def process_data(data: str, desired_columns: List[str] = None):
+def process_data(data: str, dropnull: bool = False, desired_columns: List[str] = None):
     """
     Processa e limpa os dados CSV.
 
@@ -38,9 +38,13 @@ def process_data(data: str, desired_columns: List[str] = None):
     dados_csv : str
         Os dados CSV como uma string.
     
+    dropnull : bool
+        O dropnull permite que tire as linhas com valores nulos da tabela. Por padrão ele é False 
+        e não tira as linhas com valores nulos, mas se for True ele tira as linhas com valores nulos.
+    
     desired_columss : list, optional
         Lista com os nomes das colunas desejadas, se não especificado, todas as colunas serão lidas.
-
+    
     Returns
     -------
     pandas.DataFrame or None
@@ -91,10 +95,12 @@ def process_data(data: str, desired_columns: List[str] = None):
         else:
             dados = pd.read_csv(io.StringIO(data), error_bad_lines=False)
 
-        # TODO - Realize a limpeza dos dados aqui, por exemplo:
-        # (adicionar código para limpar os dados)
-
-        return dados
+        if dropnull is True:
+            cleandados = dados.dropna()
+        if dropnull is False:
+            cleandados = dados
+            
+        return cleandados
     except TypeError:
         print("As colunas passadas não estão no formato adequado")
     except Exception as erro:

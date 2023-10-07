@@ -1,3 +1,9 @@
+'''
+Este módulo Python fornece funções para realizar solicitações HTTP 
+para obter dados de uma URL e processar dados CSV. Ele pode ser usado 
+para recuperar dados de uma fonte remota e prepará-los para análise posterior.
+'''
+
 import io
 import requests
 import pandas as pd
@@ -31,7 +37,7 @@ def make_http_request(url: str):
 
 def process_data(data: str, dropnull: bool = False, desired_columns: List[str] = None):
     """
-    Processa e limpa os dados CSV.
+    Lê e limpa dados CSV.
 
     Parameters
     ----------

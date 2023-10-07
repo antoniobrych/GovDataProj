@@ -1,8 +1,8 @@
 '''
-Módulo para testes das funções de todo o repositório.
+Modulo para testes das funcoes de todo o repositorio.
 '''
 
-from utils_gabriel import cria_imc,df_allyears,read_local_data
+from utils_gabriel import cria_imc,df_allyears,read_local_data,filtra,mean,median
 import pandas as pd
 from cleandata import make_http_request,process_data
 from downloaddata import download_csv_local
@@ -11,7 +11,7 @@ import os
 
 class TestMakeHttpRequest(unittest.TestCase):
     '''
-    Classe de teste para a função make_https_request do módulo cleandata.
+    Classe de teste para a funcao make_https_request do modulo cleandata.
     '''
     def test_failed_request(self):
         '''
@@ -24,7 +24,7 @@ class TestMakeHttpRequest(unittest.TestCase):
 
 class TestDownloadCSVLocal(unittest.TestCase):
     '''
-    Classe de teste para a função download_csv_local.
+    Classe de teste para a funcao download_csv_local.
     '''
     def setUp(self):
         '''
@@ -42,7 +42,7 @@ class TestDownloadCSVLocal(unittest.TestCase):
 
     def test_download_csv_local(self):
         '''
-        Verifica se o arquivo foi criado e se não está vazio.
+        Verifica se o arquivo foi criado e se nao esta vazio.
         '''
         download_csv_local(self.test_url,self.local_file_path)
 
@@ -55,15 +55,15 @@ class TestDownloadCSVLocal(unittest.TestCase):
 
 class TestCriaIMC(unittest.TestCase):
     '''
-    Classe de teste para a função cria_imc do módulo utils_gabriel.
+    Classe de teste para a funcao cria_imc do modulo utils_gabriel.
 
     Esta classe de teste verifica a função cria_imc para garantir que ela funcione
-    corretamente e lida com diferentes cenários, como valores não numéricos, altura zero,
+    corretamente e lida com diferentes cenarios, como valores nao numericos, altura zero,
     peso zero, altura negativa e peso negativo.
     '''
     def test_cria_imc_correct(self):
         '''
-        Teste com a função cria_imc dando certo.
+        Teste com a funcao cria_imc dando certo.
         '''
         
         # Dados de teste
@@ -86,7 +86,7 @@ class TestCriaIMC(unittest.TestCase):
 
     def test_valores_nao_numericos_altura(self):
         '''
-        Teste com a função cria_imc com valor não numérico.
+        Teste com a funcao cria_imc com valor nao numerico.
         '''
         
         # Dados de teste com valores não numéricos na coluna de altura
@@ -100,7 +100,7 @@ class TestCriaIMC(unittest.TestCase):
 
     def test_altura_zero(self):
         '''
-        Teste com a função cria_imc com valor na coluna altura igual a zero.
+        Teste com a funcao cria_imc com valor na coluna altura igual a zero.
         '''
         # Dados de teste com altura igual a zero
         dados = {'Altura(cm)': [0, 175, 150, 180],
@@ -113,7 +113,7 @@ class TestCriaIMC(unittest.TestCase):
 
     def test_altura_negativa(self):
         '''
-        Teste com a função cria_imc com valor na coluna altura menor que zero.
+        Teste com a funcao cria_imc com valor na coluna altura menor que zero.
         '''        
         # Dados de teste com altura negativa
         dados = {'Altura(cm)': [-160, 175, 150, 180],
@@ -126,7 +126,7 @@ class TestCriaIMC(unittest.TestCase):
 
     def test_valores_nao_numericos_peso(self):
         '''
-        Teste com a função cria_imc com valor na coluna peso não numérico.
+        Teste com a funcao cria_imc com valor na coluna peso nao numerico.
         '''   
         # Dados de teste com valores não numéricos na coluna de peso
         dados = {'Altura(cm)': [160, 175, 150, 180],
@@ -139,7 +139,7 @@ class TestCriaIMC(unittest.TestCase):
 
     def test_peso_zero(self):
         '''
-        Teste com a função cria_imc com valor na coluna peso igual a zero.
+        Teste com a funcao cria_imc com valor na coluna peso igual a zero.
         '''   
         # Dados de teste com peso igual a zero
         dados = {'Altura(cm)': [160, 175, 150, 180],
@@ -166,11 +166,11 @@ class TestCriaIMC(unittest.TestCase):
 
 class TestProcessData(unittest.TestCase):
     """
-    Classe de teste para a função process_data.
+    Classe de teste para a funcaoo process_data.
 
     Esta classe de teste verifica a função process_data para garantir que ela funcione
-    corretamente em diferentes cenários, incluindo processamento completo, colunas inválidas
-    e manipulação de valores nulos.
+    corretamente em diferentes cenarios, incluindo processamento completo, colunas invalidas
+    e manipulacao de valores nulos.
 
     """
 
@@ -178,8 +178,8 @@ class TestProcessData(unittest.TestCase):
         """
         Testa o processamento completo de dados.
 
-        Verifica se as colunas esperadas estão presentes, se não há valores nulos
-        e se o resultado é um DataFrame.
+        Verifica se as colunas esperadas estão presentes, se nao ha valores nulos
+        e se o resultado sera um DataFrame.
 
         """
         # Dados de teste completos
@@ -204,9 +204,9 @@ class TestProcessData(unittest.TestCase):
 
     def test_colunas_invalidas(self):
         """
-        Testa o cenário em que colunas inválidas são especificadas.
+        Testa o cenario em que colunas invalidas sao especificadas.
 
-        Verifica se a função retorna None quando colunas inválidas são especificadas.
+        Verifica se a funcao retorna None quando colunas invalidas sao especificadas.
 
         """
         # Dados de teste com colunas inválidas
@@ -225,9 +225,9 @@ class TestProcessData(unittest.TestCase):
 
     def test_dropnull_true(self):
         """
-        Testa o cenário em que `dropnull` é definido como True.
+        Testa o cenario em que `dropnull` sera definido como True.
 
-        Verifica se não há valores nulos no resultado quando `dropnull` é True.
+        Verifica se nao ha valores nulos no resultado quando `dropnull` for True.
 
         """
         # Dados de teste com valores nulos
@@ -249,7 +249,7 @@ class TestProcessData(unittest.TestCase):
 
 class TestDfAllYears(unittest.TestCase):
     '''
-    Classe de teste da função df_allyears do módulo utils_gabrie.
+    Classe de teste da funcao df_allyears do modulo utils_gabrie.
     '''
     def test_concatenacao_dataframes(self):
         '''
@@ -318,15 +318,15 @@ class TestDfAllYears(unittest.TestCase):
 
 class TestReadLocalData(unittest.TestCase):
     '''
-    Classe de teste para a função read_local_data.
+    Classe de teste para a funcao read_local_data.
     '''
 
     def test_leitura_arquivo_existente(self):
         '''
-        Teste se a função lê um arquivo CSV existente corretamente.
+        Teste se a funcao le um arquivo CSV existente corretamente.
 
-        Cria um arquivo CSV de teste temporário, lê o arquivo e verifica se o resultado
-        é um DataFrame com as mesmas dimensões que o DataFrame original. Em seguida,
+        Cria um arquivo CSV de teste temporário, le o arquivo e verifica se o resultado
+        sera um DataFrame com as mesmas dimensoes que o DataFrame original. Em seguida,
         exclui o arquivo de teste temporário.
 
         '''
@@ -365,10 +365,10 @@ class TestReadLocalData(unittest.TestCase):
 
     def test_erro_leitura(self):
         '''
-        Teste se a função gera uma exceção ao tentar ler um diretório em vez de um arquivo.
+        Teste se a funcao gera uma excecao ao tentar ler um diretorio em vez de um arquivo.
 
-        Cria um diretório de teste temporário para simular um erro de leitura e tenta ler
-        esse diretório. Em seguida, verifica se a função gera uma exceção.
+        Cria um diretorio de teste temporario para simular um erro de leitura e tenta ler
+        esse diretorio. Em seguida, verifica se a funcao gera uma excecao.
 
         '''
         # Cria um diretório de teste temporário para simular um erro de leitura
@@ -384,6 +384,131 @@ class TestReadLocalData(unittest.TestCase):
 
         # Limpeza: Remova o diretório de teste temporário
         os.rmdir(diretorio_teste)
+
+    def test_selected_columns(self):
+        '''
+        Testa a funcao read_local_data para garantir que ela le corretamente um arquivo CSV
+        com colunas selecionadas e retorna um DataFrame contendo apenas as colunas especificadas.
+    
+        Para este teste, um arquivo CSV de exemplo sera criado com as colunas 'A', 'B' e 'C', 
+        e a funcao read_local_data sera chamada para ler apenas as colunas 'A' e 'C'. 
+        Em seguida, verifica se o DataFrame resultante possui exatamente as colunas
+        especificadas.
+        
+        '''
+        # Cria um arquivo CSV de exemplo
+        sample_data = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+        sample_data.to_csv('sample_data.csv', index=False)
+
+        # Chama a função para ler o arquivo CSV com colunas selecionadas
+        selected_cols = ['A', 'C']
+        df = read_local_data('sample_data.csv', cols=selected_cols)
+
+        # Verifica se o DataFrame possui apenas as colunas selecionadas
+        self.assertListEqual(list(df.columns), selected_cols)
+
+    def test_dropnull_true(self):
+        # Cria um DataFrame de exemplo para o teste
+        data = {'A': [1, 2, 3, None],
+                'B': ['foo', 'bar', 'foo', 'baz']}
+        self.df = pd.DataFrame(data)
+
+        
+        # Cria um arquivo CSV temporario para o teste
+        temp_csv_file = 'temp_test_file.csv'
+        self.df.to_csv(temp_csv_file, index=False)
+
+        # Chame a função com dropnull = True
+        df_com_nulls_removidos = read_local_data(temp_csv_file, dropnull=True)
+
+        # Verifica se as linhas nulas foram removidas
+        self.assertFalse(df_com_nulls_removidos.isnull().values.any())
+
+        # Remova o arquivo CSV temporário após o teste
+        os.remove(temp_csv_file)
+
+
+class TesteFuncaoFiltra(unittest.TestCase):
+    '''
+    Classe de teste para a funcao que filtra tabelas com
+    uma condicao de igualdade.
+    '''
+    def setUp(self):
+        '''
+        Cria um DataFrame de exemplo para os testes.
+        '''
+        data = {'A': [1, 2, 3, 4],
+                'B': ['foo', 'bar', 'foo', 'baz']}
+        self.df = pd.DataFrame(data)
+
+    def test_filtra_sucesso(self):
+        '''
+        Teste dando certo. 
+        '''
+        dados_filtrados = filtra(self.df, 'B', 'foo')
+        self.assertTrue(dados_filtrados.equals(pd.DataFrame({'A': [1, 3], 'B': ['foo', 'foo']})))
+
+    def test_filtra_coluna_nao_encontrada(self):
+        '''
+        Teste com coluna que nao existe no dataset.
+        '''
+        with self.assertRaises(KeyError):
+            filtra(self.df, 'C', 'valor_nao_existente_na_coluna')
+
+
+class TestMeanFunction(unittest.TestCase):
+    '''
+    Classe de teste para a funcao mean do modulo utils_gabriel.
+    '''
+    def setUp(self):
+        data = {'Valor': [1, 2, 3, 4, 5],
+                'Texto': ['A', 'B', 'C', 'D', 'E']}
+        self.df = pd.DataFrame(data)
+
+    def test_mean_calculation(self):
+        '''
+        Testa o cálculo da média para uma coluna numérica.
+        Verifica se o resultado é uma instância de int ou float e se está correto.
+        '''        
+        media = mean(self.df, 'Valor')
+        self.assertIsInstance(media, (int, float))
+        self.assertAlmostEqual(media, 3.0)
+
+    def test_mean_non_numeric_column(self):
+        '''
+        Testa a função quando aplicada a uma coluna não numérica.
+        Deve levantar uma exceção ValueError.
+        '''        
+        with self.assertRaises(ValueError):
+            mean(self.df, 'Texto')
+
+
+class TestMedianFunction(unittest.TestCase):
+    '''
+    Classe de teste para a funcao mediana do modulo utils_gabriel
+    '''
+    def setUp(self):
+        data = {'Valor': [1, 2, 3, 4, 5],
+                'Texto': ['A', 'B', 'C', 'D', 'E']}
+        self.df = pd.DataFrame(data)
+
+    def test_median_calculation(self):
+        '''
+        Testa o cálculo da mediana para uma coluna numérica.
+        Verifica se o resultado é uma instância de int ou float e se está correto.
+        '''
+        mediana = median(self.df, 'Valor')
+        self.assertIsInstance(mediana, (int, float))
+        self.assertAlmostEqual(mediana, 3.0)
+
+    def test_median_non_numeric_column(self):
+        '''
+        Testa a função quando aplicada a uma coluna não numérica.
+        Deve levantar uma exceção ValueError.
+        '''
+        with self.assertRaises(ValueError):
+            median(self.df, 'Texto')
+
 
 if __name__ == '__main__':
     unittest.main()

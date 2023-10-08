@@ -26,7 +26,7 @@ def get_state_coordinates(path,dropnull = False):
     else:
         return clean_geobrazil_df
 
-def cria_mapa(army_df,height_colname,state_colname,geobrazil_df):
+def merge_height_geography_df(army_df,height_colname,state_colname,geobrazil_df):
     '''
     '''
     # Linha abaixo é temporária
@@ -45,5 +45,41 @@ def cria_mapa(army_df,height_colname,state_colname,geobrazil_df):
         tmp_df = army_df.groupby(state_colname)[height_colname].mean().reset_index()
         tmp_df.columns = [state_colname, height_colname]
         tmp_df = tmp_df[tmp_df[state_colname] != 'KK'] # O estado não existe
-        army_height = geobrazil_df.merge(tmp_df,on = state_colname,how= 'right')
-        return army_height
+        try:
+            army_height_df = geobrazil_df.merge(tmp_df,on = state_colname,how= 'right')
+        except pd.errors.MergeError as e:
+            print('Merge não estabelecido')
+        return army_height_df
+
+def create_height_heatmap(height_df):
+    '''
+    '''
+    try:
+        for valor in height_df['ALTURA']:
+                try:
+                    assert isinstance(valor, (int, float)), f"Erro, elementos da coluna {'ALTURA'} não são números"
+                    assert valor != 0, "Erro, altura não pode ser zero"
+                    assert valor > 0, "Erro, altura deve ser maior que zero."
+                except AssertionError as error:
+                    print(error)
+                    return None
+    except KeyError as ke:
+        print("A seguinte coluna não existe no Dataframe fornecido: ",str(ke))
+        return None
+
+    try:
+        height_df.plot(
+            column = 'ALTURA',
+            cmap = 'YlGnBu',
+            figsize = (16,10),
+            legend = True,
+            edgecolor = 'black',
+            vmin=height_df['ALTURA'].min(),
+            vmax=height_df['ALTURA'].max(),
+        )
+        plt.title("Mapa de Calor das Alturas das Pessoas por Estado", fontsize=16)
+        plt.axis('off')
+        plt.show()
+    except Exception as e:
+        print('Um erro aconteceu: ',str(e))
+        return None

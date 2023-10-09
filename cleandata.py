@@ -45,7 +45,7 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
     dados_csv : str
         Os dados CSV como uma string.
     
-    dropnull : bool
+    dropnull : bool, False by default
         O dropnull permite que tire as linhas com valores nulos da tabela. Por padrão ele é False 
         e nao tira as linhas com valores nulos, mas se for True ele tira as linhas com valores nulos.
     

@@ -1,5 +1,5 @@
 '''
-Esse modulo contem as ferramentas necessarias para uma anaise
+Esse modulo contem as ferramentas necessarias para uma analise
 a cerca dos imcs dos alistados.
 '''
 
@@ -22,12 +22,16 @@ def read_local_data(path: str, dropnull: bool = False,cols: List[str] = None):
     
     dropnull : bool
         Se True, dpropa as linhas nulas, se False, não dropa.
-
+    
     Returns
     -------
     cleandf : pandas.DataFrame
         Retorna um DataFrame que pode ser utilizado para a análise de algo.
-
+    
+    Raises
+    ------
+    NameError
+        Se o nome do arquivo passado nao existir no repositorio.
     '''
     try:
         if os.path.exists(path):
@@ -116,6 +120,12 @@ def df_allyears(data_list: list):
     df_concatenado : pandas.DataFrame
         DataFrame com dados de todos os anos sobre alistamento militar no Brasil.
     
+    Raises
+    ------
+    ValueError
+        Se os nomes das colunas dos dataframes forem diferentes, ou o tamanho da 
+        lista de dataframes for menor que dois.
+    
     Example
     -------
     Exemplo em que concatena dois dataframes com colunas com nomes iguais.
@@ -124,7 +134,7 @@ def df_allyears(data_list: list):
     >>> data_list = [pd.DataFrame({'Ano': [2007, 2008], 'Valor': [10, 20]}),
     ...              pd.DataFrame({'Ano': [2009, 2010], 'Valor': [30, 40]})]
     >>> df_allyears(data_list)
-       Ano  Valor
+        Ano  Valor
     0  2007     10
     1  2008     20
     2  2009     30
@@ -152,7 +162,7 @@ def df_allyears(data_list: list):
     return df_concatenado
 
 
-def cria_imc(df, height_colname: str, weight_colname: str):
+def create_imc(df, height_colname: str, weight_colname: str):
     '''
     Cria a coluna imc para uma tabela. Lembrando que o IMC 
     calcula se pelo peso(kg)/altura(m)**2.
@@ -182,7 +192,7 @@ def cria_imc(df, height_colname: str, weight_colname: str):
     >>> dados = {'Altura(cm)': [160, 175, 150, 180],
     ...          'Peso(kg)': [65, 80, 55, 90]}
     >>> df = pd.DataFrame(dados)
-    >>> df = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+    >>> df = create_imc(df, 'Altura(cm)', 'Peso(kg)')
     >>> df
        Peso(kg)  ALTURA(m)        IMC
     0        65       1.60  25.390625
@@ -211,9 +221,9 @@ def cria_imc(df, height_colname: str, weight_colname: str):
     return df
 
 
-def filtra(df, col: str, valor):
+def filtra_equal(df, col: str, valor):
     '''
-    Serve para pega uma parte do dataset que satisfaca uma condicao de igualdade.
+    Serve para pegar uma parte do dataset que satisfaca uma condicao de igualdade.
 
     Parameters
     ----------
@@ -228,8 +238,13 @@ def filtra(df, col: str, valor):
 
     Returns
     -------
-    filtered_df : pandas.DataFrame
-        Dataset sem as linhas que nao satisfazem a condicao.
+    dados_filtrados_reset : pandas.DataFrame
+        Dataset sem as linhas que nao satisfazem a condicao com os index resetados.
+    
+    Raises
+    ------
+    KeyError
+        Se o nome da coluna nao estiver no dataframe.
     
     Example
     -------
@@ -239,18 +254,24 @@ def filtra(df, col: str, valor):
     ...         'Idade': [25, 30, 22, 35],
     ...         'Cidade': ['NY', 'LA', 'NY', 'SF']}
     >>> df = pd.DataFrame(data)
-    >>> filtra(df, 'Cidade', 'NY')
-       Nome  Idade Cidade
-    0  Alice     25     NY
-    2 Charlie     22     NY    
+    >>> filtra_equal(df, 'Cidade', 'NY')
+          Nome  Idade Cidade
+    0    Alice     25     NY
+    1  Charlie     22     NY  
     '''
     try:
-        dados_filtrados = df[df[col] == valor]
-        return dados_filtrados
-    except KeyError as e:
-        raise KeyError(f"Coluna '{col}' não encontrada no DataFrame.") from e
+        if col not in df.columns:
+            raise KeyError(f"Coluna '{col}' não encontrada no DataFrame.")
+    except KeyError as erro:
+        print(erro)
+        return None
     except Exception as e:
-        raise e
+        print(e)
+        return None
+    else:
+        dados_filtrados = df[df[col] == valor]
+        dados_filtrados_reset = dados_filtrados.reset_index(drop=True)
+        return dados_filtrados_reset
 
 
 def mean(df, col: str):
@@ -269,6 +290,11 @@ def mean(df, col: str):
     float,int
         A media aritimetica de uma coluna.
     
+    Raises
+    ------
+    ValueError
+        Se o tipo dos elementos da coluna passada forem nao numericos.    
+    
     Examples
     --------
     >>> import pandas as pd
@@ -281,14 +307,13 @@ def mean(df, col: str):
     3.0
     '''
     try:
-        if df[col].dtype in [int,float]:
-            media = df[col].mean()
-        else:
+        if not pd.api.types.is_numeric_dtype(df[col]):
             raise ValueError("Os elementos da coluna não são números.")
     except ValueError as erro:
         print(erro)
         return None
-    else:        
+    else:
+        media = df[col].mean()        
         return media
 
 
@@ -308,6 +333,11 @@ def median(df, col: str):
     float,int
         A mediana da coluna.
 
+    Raises
+    ------
+    ValueError
+        Se o tipo dos elementos da coluna passada forem nao numericos.
+
     Examples
     --------
     >>> import pandas as pd
@@ -318,16 +348,129 @@ def median(df, col: str):
     3.0
     '''
     try:
-        if df[col].dtype in [int, float]:
-            mediana = df[col].median()
-        else:
+        if not pd.api.types.is_numeric_dtype(df[col]):
             raise ValueError("Os elementos da coluna não são números.")
     except ValueError as erro:
         print(erro)
         return None
     else:
+        mediana = df[col].median()
         return mediana
 
+
+def categorize_series(series, bins: list, labels: list):
+    '''
+    Categoriza uma serie pandas com base em intervalos e rotulos personalizados.
+    Usa se essa função para categorizar os intervalos de imc, de acordo com a tabela de imc.
+
+    Parameters
+    ----------
+    series : pandas.Series
+        Serie de valores de dados para categorizar.
+    bins : list
+        Lista de limites dos intervalos de categorizacao.
+    labels : list
+        Lista de rotulos correspondentes aos intervalos.
+
+    Returns
+    -------
+    serie_categorizada : pandas.Series
+        Serie de categorias atribuidas aos valores de dados.
+
+    Raises
+    ------
+    ValueError
+        Se o tamanho da lista de bins não for um a mais do que o tamanho da lista de labels.
+        Na pratica, isso significa que deve haver o mesmo número de intervalos e de legenda para os intervalos.
+
+    Example
+    --------
+    >>> import pandas as pd
+    >>> dados = pd.Series([22, 27, 31, 18, 29, 24, 35, 21, 26, 28])
+    >>> limites_personalizados = [0, 18.5, 24.9, 29.9, 34.9, 39.9, float('inf')]
+    >>> rotulos_personalizados = ['Abaixo do peso', 'Peso normal', 'Sobrepeso', 'Obesidade Grau I', 'Obesidade Grau II', 'Obesidade Grau III']
+    >>> categorias = categorize_series(dados, limites_personalizados, rotulos_personalizados)
+    >>> print(categorias.value_counts())
+    Sobrepeso             4
+    Peso normal           3
+    Abaixo do peso        1
+    Obesidade Grau I      1
+    Obesidade Grau II     1
+    Obesidade Grau III    0
+    dtype: int64
+    '''    
+    try:
+        if len(bins)-1 != len(labels):
+            raise ValueError("O número de intervalos deve ser o mesmo que o número de rótulos.")
+    except ValueError as erro:
+        print(erro)
+        return None
+    except Exception as erro:
+        print(erro)
+        return None
+    else:
+        serie_categorizada = pd.cut(series, bins = bins, labels = labels)
+        return serie_categorizada
+
+
+def percentage_value_counts(series):
+    '''
+    Mostra a porcentagem que cada valor de uma serie panda representa do total.
+
+    Parameters
+    ----------
+    series : pandas.Series
+        Série na qual se quer saber a porcentagem em que aparece cada valor.
+
+    Raises
+    ------
+    ValueError
+        Quando é passada uma série vazia.
+
+    Returns
+    -------
+    finaldf : pandas.DataFrame
+        Retorna um data frame com a coluna PORCENTAGEM, em que os valores sao 
+        decimais que representam quantos por cento o index do data frame representa 
+        do total de ocorrências da serie panda, os index  do data frame são os elementos da serie panda.
+        
+    Example
+    -------
+    >>> import pandas as pd
+    >>> dados = pd.Series([1,2,2,2,3,4,4,4,5,5])
+    >>> print(percentage_value_counts(dados))
+       PORCENTAGEM
+    2          0.3
+    4          0.3
+    5          0.2
+    1          0.1
+    3          0.1
+    '''
+    try:
+        series_count = series.count()
+        if series_count == 0:
+            raise ValueError("Deve haver mais de 0 elementos na série passada.")
+        else:
+            if series.name is None:
+                nome = 0
+            else:
+                nome = series.name        
+    except ValueError as erro:
+        print(erro)
+        return None
+    except Exception as erro:
+        print(erro)
+        return None
+    else:
+        categories_count = series.value_counts()
+        df = pd.DataFrame(categories_count)
+        df['PORCENTAGEM'] = df[nome]/series_count
+        finaldf = df.drop(nome, axis = 1)
+        return finaldf
+
+
+def percentage_formatter(x, pos):
+    return f'{x*100:.0f}%'
 
 
 if __name__ == "__main__":

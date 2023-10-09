@@ -3,6 +3,7 @@ import numpy as np
 import datetime as dt
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
 def get_state_coordinates(path,dropnull = False):
@@ -32,10 +33,10 @@ def merge_height_geography_df(army_df,height_colname,state_colname,geobrazil_df)
     # Linha abaixo é temporária
     army_df = army_df.dropna(subset=[height_colname])
     try:
-        for valor in army_df[height_colname]:
-            assert isinstance(valor,(int,float)), f"Erro, elementos da coluna {height_colname} não são números"
-            assert valor != 0, "Erro, altura não pode ser zero"
-            assert valor > 0, "Erro, altura deve ser maior que zero."
+        for val in army_df[height_colname]:
+            assert isinstance(val,(int,float)), f"Erro, elementos da coluna {height_colname} não são números"
+            assert val != 0, "Erro, altura não pode ser zero"
+            assert val > 0, "Erro, altura deve ser maior que zero."
     except AssertionError as error:
         print(error)
         return None
@@ -70,9 +71,9 @@ def create_height_heatmap(merged_army_height_df):
         return None
 
     try:
-        for valor in merged_army_height_df['UF_RESIDENCIA']:
+        for val in merged_army_height_df['UF_RESIDENCIA']:
             try:
-                assert isinstance(valor,(str)), f"Erro, elementos da coluna {'ALTURA'} não são do tipo str"
+                assert isinstance(val,(str)), f"Erro, elementos da coluna {'ALTURA'} não são do tipo str"
             except AssertionError as error:
                 print(error)
                 return None
@@ -104,10 +105,10 @@ def get_stats(army_df,numeric_colname):
     # código temporário
     army_df = army_df.dropna(subset=[numeric_colname])
     try:
-        for valor in army_df[numeric_colname]:
-            assert isinstance(valor,(int,float)), f"Erro, elementos da coluna {numeric_colname} não são números"
-            assert valor != 0, "As medidas físicas humanas não podem ser iguais a zero."
-            assert valor > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+        for val in army_df[numeric_colname]:
+            assert isinstance(val,(int,float)), f"Erro, elementos da coluna {numeric_colname} não são números"
+            assert val != 0, "As medidas físicas humanas não podem ser iguais a zero."
+            assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
     except AssertionError as error:
         print(error)
         return None
@@ -115,10 +116,51 @@ def get_stats(army_df,numeric_colname):
         print("Ocorreu um erro. O erro é: ",str(e))
     else:
         try:    
-            height_summary = army_df[numeric_colname].describe()
+            col_summary = army_df[numeric_colname].describe()
         except Exception as e:
             print('Um erro ocorreu: ',str(e))
             return None
         else:   
-            return height_summary
-    
+            return col_summary
+        
+def create_correlation_matrix(army_df,hum_measures_list):
+    '''
+    '''
+    #código temporário
+    army_df = army_df.dropna(subset=hum_measures_list)
+    filtered_army_df = army_df[hum_measures_list]
+    for col in hum_measures_list:
+        try:
+            for val in army_df[col]:
+                assert isinstance(val,(int,float)), f"Erro, elementos da coluna {col} não são números"
+                assert val != 0, "As medidas físicas humanas não podem ser iguais a zero."
+                assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+        except AssertionError as error:
+            print(error)
+            return None
+        except Exception as e:
+            print("Ocorreu um erro. O erro é: ",str(e))
+    # Não sei como melhorar essa try - except para gráficos
+    try:
+        corr_matrix = filtered_army_df.corr().round(2)
+        cmap = sns.diverging_palette(240, 10, s=150, l=40, n=250)
+        fig, ax = plt.subplots(figsize=(12, 10))
+        sns.heatmap(
+            corr_matrix, 
+            vmin=-1,
+            vmax=1,
+            cmap=cmap,
+            square=True,
+            annot=True,
+            fmt=".2f",
+            linewidths=0.5
+        )
+        plt.title("Matrix de correlação dos atributos físicos", fontsize=16)
+        plt.xticks(rotation=45, ha="right")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        plt.tight_layout()
+        plt.savefig('figure3.png', dpi=300)
+        plt.show()
+    except Exception as e:
+        print('O seguinte problema ocorreu: ',str(e))

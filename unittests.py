@@ -556,6 +556,21 @@ class TestPercentageValueCounts(unittest.TestCase):
         expected_result = expected_result.sort_index()
 
         self.assertTrue(result.equals(expected_result))
+        
+    def test2_percentage_value_counts(self):
+        '''
+        Teste com números diferentes.
+        '''        
+        dados = pd.Series([2, 2, 3, 3, 3, 4, 4, 4, 4, 5])
+        result = percentage_value_counts(dados)
+
+        expected_result = pd.DataFrame({'PORCENTAGEM': [0.2, 0.3, 0.4, 0.1]}, index=[2, 3, 4, 5])
+
+        # Ordena os índices de result e expected_result antes da comparação
+        result = result.sort_index()
+        expected_result = expected_result.sort_index()
+
+        self.assertTrue(result.equals(expected_result))
 
 
 if __name__ == '__main__':

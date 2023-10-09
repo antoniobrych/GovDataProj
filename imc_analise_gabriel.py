@@ -3,6 +3,7 @@ from utils_gabriel import save_data_in_list, create_imc, df_allyears, filtra_equ
 percentage_value_counts, percentage_formatter
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
+import numpy as np
 
 # Baixa os dados caso nao estejam baixados localmente (demora pra baixar).
 download_alldata(['PESO','ALTURA','DISPENSA'])
@@ -48,28 +49,30 @@ contagem_intervalos_recrutados = percentage_value_counts(recrutados_categorizado
 contagem_intervalos_dispensados_reordenado =contagem_intervalos_dispensados.reindex(rotulos)
 contagem_intervalos_recrutados_reordenado =contagem_intervalos_recrutados.reindex(rotulos)
 
-# GRÁFICO DISPENSADOS
-categorias_dispensados = contagem_intervalos_dispensados_reordenado.index
-
+# Os valores da coluna PORCENTAGEM de cada data frame já ordenado
 porcentagens_dispensados = contagem_intervalos_dispensados_reordenado['PORCENTAGEM']
-
-plt.bar(categorias_dispensados,porcentagens_dispensados,color='green')
-plt.title("Dispensados")
-plt.xticks(rotation=45)
-plt.ylim(0,1)
-plt.gca().yaxis.set_major_formatter(FuncFormatter(percentage_formatter))
-plt.tight_layout()
-plt.show()
-
-# GRÁFICO RECRUTADOS
-categorias_recrutados = contagem_intervalos_recrutados_reordenado.index
-
 porcentagens_recrutados = contagem_intervalos_recrutados_reordenado['PORCENTAGEM']
 
-plt.bar(categorias_recrutados,porcentagens_recrutados,color='blue')
-plt.title("Recrutados")
+# Largura das barras do gráfico
+largura_barra = 0.23
+
+# Calcule as posições das barras para recrutados e dispensados
+posicoes = np.arange(len(rotulos))
+posicoes_recrutados = posicoes - largura_barra / 2
+posicoes_dispensados = posicoes + largura_barra / 2
+
+# As barras do gráfico, verde para os dados dos Recrutados e cinza para os dados dos Dispensados
+plt.bar(x=posicoes_recrutados,width=largura_barra, label='Recrutados',height=porcentagens_recrutados,color='green')
+plt.bar(x=posicoes_dispensados,width=largura_barra, label='Dispensados',height=porcentagens_dispensados,color='gray')
+
+# Configurando o gráfico
+plt.title("Recrutados vs. Dispensados")
 plt.xticks(rotation=45)
 plt.ylim(0,1)
 plt.gca().yaxis.set_major_formatter(FuncFormatter(percentage_formatter))
+plt.xticks(posicoes, rotulos, rotation=45)
+plt.legend()
 plt.tight_layout()
+
+# Mostra o gráfico no output
 plt.show()

@@ -4,6 +4,7 @@ import datetime as dt
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import datetime as dt
 import os
 
 def get_state_coordinates(path,dropnull = False):
@@ -24,6 +25,7 @@ def get_state_coordinates(path,dropnull = False):
         return None
     except Exception as e:
         print("Ocorreu um erro, e não é o nome do arquivo. O erro é: ",str(e))
+        return None
     else:
         return clean_geobrazil_df
 
@@ -114,6 +116,7 @@ def get_stats(army_df,numeric_colname):
         return None
     except Exception as e:
         print("Ocorreu um erro. O erro é: ",str(e))
+        return None
     else:
         try:    
             col_summary = army_df[numeric_colname].describe()
@@ -140,6 +143,7 @@ def create_correlation_matrix(army_df,hum_measures_list):
             return None
         except Exception as e:
             print("Ocorreu um erro. O erro é: ",str(e))
+            return None
     # Não sei como melhorar essa try - except para gráficos
     try:
         corr_matrix = filtered_army_df.corr().round(2)
@@ -160,7 +164,66 @@ def create_correlation_matrix(army_df,hum_measures_list):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         plt.tight_layout()
-        plt.savefig('figure3.png', dpi=300)
         plt.show()
     except Exception as e:
         print('O seguinte problema ocorreu: ',str(e))
+        return None
+
+def get_age(army_df,birth_date_colname):
+    '''
+    '''
+    # Tem que fazer o tartamento dos dados para ver 
+    current_year = dt.datetime.today().year
+    age_list = []
+    try:
+        for birth_date in army_df[birth_date_colname]:
+            assert isinstance(birth_date,(int,float)), f"Erro, elementos da coluna {birth_date_colname} não são números"
+            assert birth_date > 1920, "Erro, data de nascimento deve ser maior que 1920."
+            age_list.append(current_year - birth_date)
+    except AssertionError as error:
+        print(error)
+        return None
+    except Exception as e:
+        print("Ocorreu um erro, e não é o nome do arquivo. O erro é: ",str(e))
+        return None
+    else:
+        army_age_df = pd.DataFrame(age_list,columns=['IDADE'])
+        return army_age_df
+    
+def create_age_histogram(army_age_df):
+    '''
+    '''
+    try:
+        for val in army_age_df['IDADE']:
+            assert isinstance(val,(int,float)), f"Erro, elementos da coluna {'IDADE'} não são números"
+            assert val != 0, "A idade não podem ser iguais a zero."
+            assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+    except AssertionError as error:
+        print(error)
+        return None
+    except Exception as e:
+        print("Ocorreu um erro. A seguinte coluna não pertence ao Dataframe: ",str(e))
+        return None
+    min_age = army_age_df['IDADE'].min()
+    max_age = army_age_df['IDADE'].quantile(0.98)
+    bin_width = 1    
+    x_range = (min_age, max_age + 2)
+
+    try:
+        plt.hist(
+            army_age_df['IDADE'],
+            bins=np.arange(min_age, max_age + bin_width, bin_width),  # Define custom bin edges
+            facecolor='#1d91c0',
+            edgecolor='black',
+            linewidth=1
+        )
+        ticks = [0, 100000, 300000,500000, 700000, 900000]
+        plt.yticks(ticks)
+        plt.xlim(x_range)
+        plt.grid(alpha=0.2,linestyle='-', linewidth=0.6,color= 'black')
+        plt.xlabel('Idade')
+        plt.ylabel('Frequência')
+        plt.title('Distribuição de idades')
+        plt.show()
+    except Exception as e:
+        print('ocorreu um erro: ',str(e))

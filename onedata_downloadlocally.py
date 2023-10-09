@@ -1,7 +1,7 @@
 '''
 Esse modulo tem o objetivo de baixar csvs localmente.
-Para isso foi criada uma funcao que baixa um unico arquivo csv.
-E outra que baixa todos os csvs necessarios para anlise. 
+Para isso foi criada uma função que baixa um unico arquivo csv.
+E outra que baixa todos os csvs necessarios para analise. 
 '''
 
 import os
@@ -58,24 +58,37 @@ def download_csv_local(url: str,dropna:bool = False, local_file:str = None ,colu
     except Exception as e:
         print("Ocorreu um erro durante o processo:", str(e))
         
-def download_alldata(desired_columns: List[str]):
+def download_alldata(desired_columns: List[str]=[]):
     '''
     Apenas baixa todos os csvs dos anos dispniveis no ambiente local.
     Note que essa funcao so funciona pro caso especifico do tema do trabalho.
+    É uma especialização da função download_csv_local
 
     Parameters
     ----------
     desired_columns : List[str]
-        Lista com as colunas que o usuario deseja baixar.
+        Lista com as colunas que o usuario deseja baixar, por padrão vazia.
+        Se estiver vazia, o usuário baixará todas as colunas do arquivo.
 
     Returns
     -------
     None.
 
     '''
-    for i in range(2007, 2023):
+    for i in range(2007, 2023,1):
+        print("*-*"*10)
         if not os.path.exists(f'sermil{i}.csv'):
             url_repositorio = f'https://dadosabertos.eb.mil.br/arquivos/sermil/sermil{i}.csv'
-            download_csv_local(url_repositorio, local_file=f'sermil{i}.csv', dropna=True, columns=desired_columns)
+            print("Downloading SERMIL-DATA: ano %i"%i)
+            if len(desired_columns) == 0:
+  
+                download_csv_local(url_repositorio, local_file=f'sermil{i}.csv', dropna=True)
+            else:
+
+                download_csv_local(url_repositorio, local_file=f'sermil{i}.csv', dropna=True, columns=desired_columns)
         else:
             print(f'O arquivo sermil{i}.csv ja existe no seu local de trabalho.')
+        print("STATUS %.2f %%  %s/16 total"% (i/2022,i))
+        print("*-*"*10)
+
+        

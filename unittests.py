@@ -2,7 +2,8 @@
 Modulo para testes das funcoes de todo o repositorio.
 '''
 
-from utils_gabriel import cria_imc,df_allyears,read_local_data,filtra,mean,median
+from utils_gabriel import create_imc, df_allyears, read_local_data, filtra_equal, mean, median, categorize_series,\
+percentage_value_counts
 import pandas as pd
 from cleandata import make_http_request,process_data
 from downloaddata import download_csv_local
@@ -53,17 +54,17 @@ class TestDownloadCSVLocal(unittest.TestCase):
         self.assertTrue(os.path.getsize(self.local_file_path) > 0, "O arquivo CSV está vazio")
         
 
-class TestCriaIMC(unittest.TestCase):
+class TestCreateIMC(unittest.TestCase):
     '''
-    Classe de teste para a funcao cria_imc do modulo utils_gabriel.
+    Classe de teste para a funcao create_imc do modulo utils_gabriel.
 
     Esta classe de teste verifica a função cria_imc para garantir que ela funcione
     corretamente e lida com diferentes cenarios, como valores nao numericos, altura zero,
     peso zero, altura negativa e peso negativo.
     '''
-    def test_cria_imc_correct(self):
+    def test_create_imc_correct(self):
         '''
-        Teste com a funcao cria_imc dando certo.
+        Teste com a funcao create_imc dando certo.
         '''
         
         # Dados de teste
@@ -72,7 +73,7 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         
-        df_resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        df_resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
 
         # Valores esperados após o cálculo do IMC
         valores_esperados = [25.390625, 26.122449, 24.444444, 27.777778]
@@ -84,9 +85,9 @@ class TestCriaIMC(unittest.TestCase):
         # Verifica se a coluna 'Altura(cm)' foi removida
         self.assertNotIn('Altura(cm)', df_resultado.columns)
 
-    def test_valores_nao_numericos_altura(self):
+    def test_non_numeric_values_height(self):
         '''
-        Teste com a funcao cria_imc com valor nao numerico.
+        Teste com a funcao create_imc com valor nao numerico.
         '''
         
         # Dados de teste com valores não numéricos na coluna de altura
@@ -95,12 +96,12 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando há valores não numéricos
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
-    def test_altura_zero(self):
+    def test_height_zero(self):
         '''
-        Teste com a funcao cria_imc com valor na coluna altura igual a zero.
+        Teste com a funcao create_imc com valor na coluna altura igual a zero.
         '''
         # Dados de teste com altura igual a zero
         dados = {'Altura(cm)': [0, 175, 150, 180],
@@ -108,12 +109,12 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando a altura é zero
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
-    def test_altura_negativa(self):
+    def test_negative_height(self):
         '''
-        Teste com a funcao cria_imc com valor na coluna altura menor que zero.
+        Teste com a funcao create_imc com valor na coluna altura menor que zero.
         '''        
         # Dados de teste com altura negativa
         dados = {'Altura(cm)': [-160, 175, 150, 180],
@@ -121,12 +122,12 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando a altura é negativa
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
-    def test_valores_nao_numericos_peso(self):
+    def test_non_numeric_values_weight(self):
         '''
-        Teste com a funcao cria_imc com valor na coluna peso nao numerico.
+        Teste com a funcao create_imc com valor na coluna peso nao numerico.
         '''   
         # Dados de teste com valores não numéricos na coluna de peso
         dados = {'Altura(cm)': [160, 175, 150, 180],
@@ -134,12 +135,12 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando há valores não numéricos
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
-    def test_peso_zero(self):
+    def test_weight_zero(self):
         '''
-        Teste com a funcao cria_imc com valor na coluna peso igual a zero.
+        Teste com a funcao create_imc com valor na coluna peso igual a zero.
         '''   
         # Dados de teste com peso igual a zero
         dados = {'Altura(cm)': [160, 175, 150, 180],
@@ -147,12 +148,12 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando o peso é zero
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
-    def test_peso_negativo(self):
+    def test_negative_weight(self):
         '''
-        Teste com a função cria_imc com valor na coluna peso menor que zero.
+        Teste com a função create_imc com valor na coluna peso menor que zero.
         '''           
         # Dados de teste com peso negativo
         dados = {'Altura(cm)': [160, 175, 150, 180],
@@ -160,7 +161,7 @@ class TestCriaIMC(unittest.TestCase):
         df = pd.DataFrame(dados)
 
         # Verifica se a função retorna None quando o peso é negativo
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
+        resultado = create_imc(df, 'Altura(cm)', 'Peso(kg)')
         self.assertIsNone(resultado)
 
 
@@ -174,7 +175,7 @@ class TestProcessData(unittest.TestCase):
 
     """
 
-    def test_processamento_completo(self):
+    def test_process_correct(self):
         """
         Testa o processamento completo de dados.
 
@@ -202,7 +203,7 @@ class TestProcessData(unittest.TestCase):
         # Verifica se não há valores nulos
         self.assertFalse(resultado.isnull().values.any())
 
-    def test_colunas_invalidas(self):
+    def test_invalid_columns(self):
         """
         Testa o cenario em que colunas invalidas sao especificadas.
 
@@ -251,7 +252,7 @@ class TestDfAllYears(unittest.TestCase):
     '''
     Classe de teste da funcao df_allyears do modulo utils_gabrie.
     '''
-    def test_concatenacao_dataframes(self):
+    def test_concat_dataframes_correct(self):
         '''
         Teste em que funciona o concatenamento de tabelas.
         '''
@@ -276,7 +277,7 @@ class TestDfAllYears(unittest.TestCase):
         # Testa se o DataFrame concatenado tem o mesmo número de linhas que a soma dos DataFrames individuais
         self.assertEqual(len(resultado), len(df1) + len(df2) + len(df3))
 
-    def test_nomes_colunas_diferentes(self):
+    def test_different_column_names(self):
         '''
         Teste que confere se ao passar datasets que possuem colunas
         com nomes diferentes levanta o tratamento realizado.
@@ -299,7 +300,7 @@ class TestDfAllYears(unittest.TestCase):
         resultado = df_allyears(data_list)
         self.assertIsNone(resultado)
 
-    def test_lista_com_menos_de_dois_dataframes(self):
+    def test_less_than_two_dfs(self):
         '''
         Teste que confere se ao passar menos de dois dataframes
         levanta o tratamento realizado.
@@ -428,7 +429,7 @@ class TestReadLocalData(unittest.TestCase):
         os.remove(temp_csv_file)
 
 
-class TesteFuncaoFiltra(unittest.TestCase):
+class TesteFuncaoFiltraEqual(unittest.TestCase):
     '''
     Classe de teste para a funcao que filtra tabelas com
     uma condicao de igualdade.
@@ -445,16 +446,16 @@ class TesteFuncaoFiltra(unittest.TestCase):
         '''
         Teste dando certo. 
         '''
-        dados_filtrados = filtra(self.df, 'B', 'foo')
+        dados_filtrados = filtra_equal(self.df, 'B', 'foo')
         self.assertTrue(dados_filtrados.equals(pd.DataFrame({'A': [1, 3], 'B': ['foo', 'foo']})))
 
     def test_filtra_coluna_nao_encontrada(self):
         '''
         Teste com coluna que nao existe no dataset.
         '''
-        with self.assertRaises(KeyError):
-            filtra(self.df, 'C', 'valor_nao_existente_na_coluna')
-
+        dados_filtrados = filtra_equal(self.df, 'C', 'foo')
+        self.assertEqual(dados_filtrados,None)
+        
 
 class TestMeanFunction(unittest.TestCase):
     '''
@@ -478,10 +479,10 @@ class TestMeanFunction(unittest.TestCase):
         '''
         Testa a função quando aplicada a uma coluna não numérica.
         Deve levantar uma exceção ValueError.
-        '''        
-        with self.assertRaises(ValueError):
-            mean(self.df, 'Texto')
-
+        '''     
+        media = mean(self.df, 'Texto')
+        self.assertEqual(media, None)
+        
 
 class TestMedianFunction(unittest.TestCase):
     '''
@@ -506,8 +507,55 @@ class TestMedianFunction(unittest.TestCase):
         Testa a função quando aplicada a uma coluna não numérica.
         Deve levantar uma exceção ValueError.
         '''
-        with self.assertRaises(ValueError):
-            median(self.df, 'Texto')
+        mediana = median(self.df, 'Texto')
+        self.assertEqual(mediana, None)
+        
+
+class TestCategorizeSeries(unittest.TestCase):
+    '''
+    Classe de teste para a funcao categorize_series do modulo utils_gabriel
+    '''
+    def setUp(self):
+        self.dados = pd.Series([22, 27, 31, 18, 29, 24, 35, 21, 26, 28])
+        self.limites_personalizados = [0, 18.5, 24.9, 29.9, 34.9, 39.9, float('inf')]
+        self.rotulos_personalizados = ['Abaixo do peso', 'Peso normal', 'Sobrepeso', 'Obesidade Grau I', 'Obesidade Grau II', 'Obesidade Grau III']
+    
+    def test_labels_bins_correct(self):
+        '''
+        Teste com as listas de labels e bins nos tamanhos corretos.
+        '''
+        resultado = categorize_series(self.dados,self.limites_personalizados,self.rotulos_personalizados)
+        self.assertIsInstance(resultado, pd.Series)
+    
+    def test_labels_bins_incorrect(self):
+        '''
+        Teste com as listas de labels e bins nos tamanhos incorretos.
+        '''
+        self.dados = pd.Series([1,2,3,4,5])
+        self.bins = [1,3,5,7]
+        self.labels = ['bom','ruim']
+        result = categorize_series(self.dados, self.bins, self.labels)
+        self.assertEqual(result,None)
+        
+        
+class TestPercentageValueCounts(unittest.TestCase):
+    '''
+    Classe de teste para a funcao percentage_value_counts.
+    '''
+    def test_percentage_value_counts(self):
+        '''
+        Teste com o return esperado.
+        '''        
+        dados = pd.Series([1, 2, 2, 2, 3, 4, 4, 4, 5, 5])
+        result = percentage_value_counts(dados)
+
+        expected_result = pd.DataFrame({'PORCENTAGEM': [0.1, 0.3, 0.3, 0.1, 0.2]}, index=[1, 2, 4, 3, 5])
+
+        # Ordena os índices de result e expected_result antes da comparação
+        result = result.sort_index()
+        expected_result = expected_result.sort_index()
+
+        self.assertTrue(result.equals(expected_result))
 
 
 if __name__ == '__main__':

@@ -46,16 +46,18 @@ def merge_height_geography_df(army_df,height_colname,state_colname,geobrazil_df)
         tmp_df.columns = [state_colname, height_colname]
         tmp_df = tmp_df[tmp_df[state_colname] != 'KK'] # O estado não existe
         try:
-            army_height_df = geobrazil_df.merge(tmp_df,on = state_colname,how= 'right')
+            merged_army_height_df = geobrazil_df.merge(tmp_df,on = state_colname,how= 'right')
         except pd.errors.MergeError as e:
             print('Merge não estabelecido')
-        return army_height_df
+        return merged_army_height_df
 
-def create_height_heatmap(height_df):
+def create_height_heatmap(merged_army_height_df):
     '''
     '''
+    # código abaixo temporário
+    merged_army_height_df = merged_army_height_df.dropna(subset=['ALTURA'])
     try:
-        for valor in height_df['ALTURA']:
+        for valor in merged_army_height_df['ALTURA']:
                 try:
                     assert isinstance(valor, (int, float)), f"Erro, elementos da coluna {'ALTURA'} não são números"
                     assert valor != 0, "Erro, altura não pode ser zero"
@@ -68,14 +70,25 @@ def create_height_heatmap(height_df):
         return None
 
     try:
-        height_df.plot(
+        for valor in merged_army_height_df['UF_RESIDENCIA']:
+            try:
+                assert isinstance(valor,(str)), f"Erro, elementos da coluna {'ALTURA'} não são do tipo str"
+            except AssertionError as error:
+                print(error)
+                return None
+    except KeyError as ke:
+        print("A seguinte coluna não existe no Dataframe fornecido: ",str(ke))
+        return None        
+
+    try:
+        merged_army_height_df.plot(
             column = 'ALTURA',
             cmap = 'YlGnBu',
             figsize = (16,10),
             legend = True,
             edgecolor = 'black',
-            vmin=height_df['ALTURA'].min(),
-            vmax=height_df['ALTURA'].max(),
+            vmin=merged_army_height_df['ALTURA'].min(),
+            vmax=merged_army_height_df['ALTURA'].max(),
         )
         plt.title("Mapa de Calor das Alturas das Pessoas por Estado", fontsize=16)
         plt.axis('off')
@@ -83,3 +96,29 @@ def create_height_heatmap(height_df):
     except Exception as e:
         print('Um erro aconteceu: ',str(e))
         return None
+    
+
+def get_stats(army_df,numeric_colname):
+    '''
+    '''
+    # código temporário
+    army_df = army_df.dropna(subset=[numeric_colname])
+    try:
+        for valor in army_df[numeric_colname]:
+            assert isinstance(valor,(int,float)), f"Erro, elementos da coluna {numeric_colname} não são números"
+            assert valor != 0, "As medidas físicas humanas não podem ser iguais a zero."
+            assert valor > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+    except AssertionError as error:
+        print(error)
+        return None
+    except Exception as e:
+        print("Ocorreu um erro. O erro é: ",str(e))
+    else:
+        try:    
+            height_summary = army_df[numeric_colname].describe()
+        except Exception as e:
+            print('Um erro ocorreu: ',str(e))
+            return None
+        else:   
+            return height_summary
+    

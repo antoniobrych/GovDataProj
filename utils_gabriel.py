@@ -470,6 +470,29 @@ def percentage_value_counts(series):
 
 
 def percentage_formatter(x, pos):
+    """
+    Formata um número como uma string de porcentagem sem casas decimais.
+
+    Parameters
+    -----------
+    x : float
+        O valor numérico a ser formatado como porcentagem.
+    
+    pos : int
+        A posição no eixo em que o valor x está sendo usado.
+
+    Returns
+    --------
+    str
+        Uma string formatada representando o valor x como uma porcentagem inteira.
+
+    Example
+    --------
+    >>> percentage_formatter(0.25, 0)
+    '25%'
+    >>> percentage_formatter(0.753, 1)
+    '75%'
+    """
     return f'{x*100:.0f}%'
 
 

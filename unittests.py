@@ -2,7 +2,7 @@
 Modulo para testes das funcoes de todo o repositorio.
 '''
 
-from utils_gabriel import cria_imc,df_allyears,read_local_data,filtra,mean,median
+from utils_gabriel import df_allyears,read_local_data,filtra,mean,median
 import pandas as pd
 from cleandata import make_http_request,process_data
 from downloaddata import download_csv_local
@@ -53,115 +53,6 @@ class TestDownloadCSVLocal(unittest.TestCase):
         self.assertTrue(os.path.getsize(self.local_file_path) > 0, "O arquivo CSV está vazio")
         
 
-class TestCriaIMC(unittest.TestCase):
-    '''
-    Classe de teste para a funcao cria_imc do modulo utils_gabriel.
-
-    Esta classe de teste verifica a função cria_imc para garantir que ela funcione
-    corretamente e lida com diferentes cenarios, como valores nao numericos, altura zero,
-    peso zero, altura negativa e peso negativo.
-    '''
-    def test_cria_imc_correct(self):
-        '''
-        Teste com a funcao cria_imc dando certo.
-        '''
-        
-        # Dados de teste
-        dados = {'Altura(cm)': [160, 175, 150, 180],
-                 'Peso(kg)': [65, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        
-        df_resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-
-        # Valores esperados após o cálculo do IMC
-        valores_esperados = [25.390625, 26.122449, 24.444444, 27.777778]
-
-        # Verifica se os valores da coluna IMC correspondem aos valores esperados
-        for i, valor_esperado in enumerate(valores_esperados):
-            self.assertAlmostEqual(df_resultado.loc[i, 'IMC'], valor_esperado, places=2)
-
-        # Verifica se a coluna 'Altura(cm)' foi removida
-        self.assertNotIn('Altura(cm)', df_resultado.columns)
-
-    def test_valores_nao_numericos_altura(self):
-        '''
-        Teste com a funcao cria_imc com valor nao numerico.
-        '''
-        
-        # Dados de teste com valores não numéricos na coluna de altura
-        dados = {'Altura(cm)': ['160', 175, 150, 180],
-                 'Peso(kg)': [65, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando há valores não numéricos
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
-
-    def test_altura_zero(self):
-        '''
-        Teste com a funcao cria_imc com valor na coluna altura igual a zero.
-        '''
-        # Dados de teste com altura igual a zero
-        dados = {'Altura(cm)': [0, 175, 150, 180],
-                 'Peso(kg)': [65, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando a altura é zero
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
-
-    def test_altura_negativa(self):
-        '''
-        Teste com a funcao cria_imc com valor na coluna altura menor que zero.
-        '''        
-        # Dados de teste com altura negativa
-        dados = {'Altura(cm)': [-160, 175, 150, 180],
-                 'Peso(kg)': [65, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando a altura é negativa
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
-
-    def test_valores_nao_numericos_peso(self):
-        '''
-        Teste com a funcao cria_imc com valor na coluna peso nao numerico.
-        '''   
-        # Dados de teste com valores não numéricos na coluna de peso
-        dados = {'Altura(cm)': [160, 175, 150, 180],
-                 'Peso(kg)': ['65', 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando há valores não numéricos
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
-
-    def test_peso_zero(self):
-        '''
-        Teste com a funcao cria_imc com valor na coluna peso igual a zero.
-        '''   
-        # Dados de teste com peso igual a zero
-        dados = {'Altura(cm)': [160, 175, 150, 180],
-                 'Peso(kg)': [0, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando o peso é zero
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
-
-    def test_peso_negativo(self):
-        '''
-        Teste com a função cria_imc com valor na coluna peso menor que zero.
-        '''           
-        # Dados de teste com peso negativo
-        dados = {'Altura(cm)': [160, 175, 150, 180],
-                 'Peso(kg)': [-65, 80, 55, 90]}
-        df = pd.DataFrame(dados)
-
-        # Verifica se a função retorna None quando o peso é negativo
-        resultado = cria_imc(df, 'Altura(cm)', 'Peso(kg)')
-        self.assertIsNone(resultado)
 
 
 class TestProcessData(unittest.TestCase):

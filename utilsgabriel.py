@@ -62,7 +62,7 @@ def save_data_in_list(dropna: bool = False,cols: List[str] = None):
     'sermil{ano}.csv' e todos eles estiverem baixados no repositorio.
 
     Parameters
-    -------
+    ----------
     cols : list
         Lista com as colunas desejadas dos datasets que serão salvos em uma lista.
     

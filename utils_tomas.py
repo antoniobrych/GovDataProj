@@ -1,10 +1,10 @@
 '''
 Esse módulo contem funções que fornecem análises estatística e visualizações gráficas 
 '''
-
 import pandas as pd
 import numpy as np
 import datetime as dt
+from typing import List,Union
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -76,13 +76,13 @@ def merge_height_geography_df(army_df: pd.DataFrame, height_colname: str, state_
     '''
     try:
         if height_colname not in army_df.columns:
-            raise KeyError("Column specified does not exist in the dataframe: ", height_colname)
+            raise KeyError("A coluna especificada não existe no dataframe: ", height_colname)
     except KeyError as ke:
         print("Error:", str(ke))
         return None
     try:
         if state_colname not in army_df.columns:
-            raise KeyError("Column specified does not exist in the dataframe: ", height_colname)
+            raise KeyError("A coluna especificada não existe no dataframe: ", height_colname)
     except KeyError as ke:
         print("Error:", str(ke))
         return None
@@ -116,7 +116,7 @@ def merge_height_geography_df(army_df: pd.DataFrame, height_colname: str, state_
         return merged_army_height_df
 
 
-def create_height_heatmap(merged_army_height_df: pd.DataFrame):
+def create_height_heatmap(merged_army_height_df: pd.DataFrame,height_colname: str,state_colname: str):
     '''
     Cria um gráfico do mapa de calor brasileiro que representa a diferença entre as médias das idades por estado
 
@@ -132,22 +132,34 @@ def create_height_heatmap(merged_army_height_df: pd.DataFrame):
     -----
     ...
     '''
+    try:
+        if height_colname not in merged_army_height_df.columns:
+            raise KeyError("A seguinte coluna não existe no DataFrame: ", height_colname)
+    except KeyError as ke:
+        print("Error:", str(ke))
+        return None
+    try:
+        if state_colname not in merged_army_height_df.columns:
+            raise KeyError("A seguinte coluna não existe no DataFrame: ", height_colname)
+    except KeyError as ke:
+        print("Error:", str(ke))
+        return None
     # código abaixo temporário
-    merged_army_height_df = merged_army_height_df.dropna(subset=['ALTURA'])
-    for valor in merged_army_height_df['ALTURA']:
+    merged_army_height_df = merged_army_height_df.dropna(subset=[height_colname])
+    for valor in merged_army_height_df[height_colname]:
         try:
             assert isinstance(
-                valor, (int, float)), f"Erro, elementos da coluna {'ALTURA'} não são números"
+                valor, (int, float)), f"Erro, elementos da coluna {height_colname} não são números"
             assert valor != 0, "Erro, altura não pode ser zero"
             assert valor > 0, "Erro, altura deve ser maior que zero."
         except AssertionError as error:
             print(error)
             return None
     try:
-        for val in merged_army_height_df['UF_RESIDENCIA']:
+        for val in merged_army_height_df[state_colname]:
             try:
                 assert isinstance(
-                    val, (str)), f"Erro, elementos da coluna {'ALTURA'} não são do tipo str"
+                    val, (str)), f"Erro, elementos da coluna {height_colname} não são do tipo str"
             except AssertionError as error:
                 print(error)
                 return None
@@ -157,13 +169,13 @@ def create_height_heatmap(merged_army_height_df: pd.DataFrame):
 
     try:
         merged_army_height_df.plot(
-            column='ALTURA',
+            column=height_colname,
             cmap='YlGnBu',
             figsize=(16, 10),
             legend=True,
             edgecolor='black',
-            vmin=merged_army_height_df['ALTURA'].min(),
-            vmax=merged_army_height_df['ALTURA'].max(),
+            vmin=merged_army_height_df[height_colname].min(),
+            vmax=merged_army_height_df[height_colname].max(),
         )
         plt.title("Mapa de Calor das Alturas das Pessoas por Estado", fontsize=16)
         plt.axis('off')
@@ -195,11 +207,17 @@ def get_stats(army_df: pd.DataFrame, numeric_colname: str) -> pd.Series:
     # código temporário
     army_df = army_df.dropna(subset=[numeric_colname])
     try:
+        if numeric_colname not in army_df.columns:
+            raise KeyError("A seguinte coluna não existe no DataFrame: ", numeric_colname)
+    except KeyError as ke:
+        print("Erro: ", str(ke))
+        return None
+    try:
         for val in army_df[numeric_colname]:
             assert isinstance(
                 val, (int, float)), f"Erro, elementos da coluna {numeric_colname} não são números"
-            assert val != 0, "As medidas físicas humanas não podem ser iguais a zero."
-            assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+            assert val != 0, "Erro, altura não pode ser zero"
+            assert val > 0, "Erro, altura deve ser maior que zero."
     except AssertionError as error:
         print(error)
         return None
@@ -216,9 +234,17 @@ def get_stats(army_df: pd.DataFrame, numeric_colname: str) -> pd.Series:
             return col_summary
 
 
-def create_correlation_matrix(army_df, hum_measures_list):
+def create_correlation_matrix(army_df: pd.DataFrame, hum_measures_list: List[str]) -> bool:
     '''
     '''
+    try:
+        for elem in hum_measures_list:
+            if elem not in army_df.columns:
+                raise KeyError("A seguinte coluna não existe no DataFrame: ", elem)
+    except KeyError as ke:
+        print('Erro: ',str(ke))
+        return None
+
     # código temporário
     army_df = army_df.dropna(subset=hum_measures_list)
     filtered_army_df = army_df[hum_measures_list]

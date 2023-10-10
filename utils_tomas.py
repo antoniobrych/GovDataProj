@@ -1,3 +1,8 @@
+'''
+Esse módulo contem funções que fornecem análises estatística e visualizações gráficas 
+'''
+
+
 import pandas as pd
 import numpy as np
 import datetime as dt
@@ -7,8 +12,23 @@ import seaborn as sns
 import datetime as dt
 import os
 
-def get_state_coordinates(path,dropnull = False):
+def get_state_coordinates(path: str,dropnull: bool = False)-> gpd.GeoDataFrame:
     '''
+    Lê o um arquivo gpkg e cria um GeoDataFrame 
+    
+    Parameters
+    ----------
+    path: str
+        O caminho do arquivo csv que será lido.
+    dropnull : bool
+        Caso True, serão removidas as linhas nulas, se False, as linhas com valores nulos não  não serão removidas..
+    Returns
+    -------
+        clean_geobrazil_df : gpd.GeoDataFrame
+            Um Dataframe que contem uma coluna dos estados brasileiros e outra com as suas formas poligonais
+    Raises
+    -----
+    ...
     '''
     try:
         if os.path.exists(path):
@@ -29,8 +49,27 @@ def get_state_coordinates(path,dropnull = False):
     else:
         return clean_geobrazil_df
 
-def merge_height_geography_df(army_df,height_colname,state_colname,geobrazil_df):
+def merge_height_geography_df(army_df: pd.DataFrame,height_colname: str,state_colname: str,geobrazil_df: gpd.GeoDataFrame ) -> pd.DataFrame:
     '''
+    Faz o merge do DataFrame do alistamento militar com um GeoDataFrame.
+    
+    Parameters
+    ----------
+    army_df: pd.DataFrame
+        Arquivo que contem os dados acerca do alistamento militar do Brasil
+    height_colname : str
+        Nome da coluna do DataFrame que representa a altura.
+    state_colname : str
+        Nome da coluna do DataFrame que representa os estados.
+    geobrazil_df : gpd.GeoDataFrame
+        Arquivo que contem os dados acerca dos estados do Brasil
+    Returns
+    -------
+        merged_army_height_df : pd.DataFrame
+            Um Dataframe que contem uma coluna da altura em conjunto com os dados dos estados brasileiros 
+    Raises
+    -----
+    ...
     '''
     # Linha abaixo é temporária
     army_df = army_df.dropna(subset=[height_colname])
@@ -54,13 +93,25 @@ def merge_height_geography_df(army_df,height_colname,state_colname,geobrazil_df)
             print('Merge não estabelecido')
         return merged_army_height_df
 
-def create_height_heatmap(merged_army_height_df):
+def create_height_heatmap(merged_army_height_df: pd.DataFrame)-> plt.pyplot.Figure:
     '''
+    Cria um gráfico do mapa de calor brasileiro que representa a diferença entre as médias das idades por estado
+
+    Parameters
+    ----------
+    merged_army_height_df : pd.DataFrame
+
+    Returns
+    -------
+    Perguntar pro monitor!!
+
+    Raises
+    -----
+    ...
     '''
     # código abaixo temporário
     merged_army_height_df = merged_army_height_df.dropna(subset=['ALTURA'])
-    try:
-        for valor in merged_army_height_df['ALTURA']:
+    for valor in merged_army_height_df['ALTURA']:
                 try:
                     assert isinstance(valor, (int, float)), f"Erro, elementos da coluna {'ALTURA'} não são números"
                     assert valor != 0, "Erro, altura não pode ser zero"
@@ -68,10 +119,6 @@ def create_height_heatmap(merged_army_height_df):
                 except AssertionError as error:
                     print(error)
                     return None
-    except KeyError as ke:
-        print("A seguinte coluna não existe no Dataframe fornecido: ",str(ke))
-        return None
-
     try:
         for val in merged_army_height_df['UF_RESIDENCIA']:
             try:
@@ -101,8 +148,23 @@ def create_height_heatmap(merged_army_height_df):
         return None
     
 
-def get_stats(army_df,numeric_colname):
+def get_stats(army_df: pd.DataFrame,numeric_colname: str)-> pd.Series:
     '''
+    Faz uma análise estatística da coluna do dataframe em questão.
+    
+    Parameters
+    ----------
+    army_df: pd.DataFrame
+        Arquivo que contem os dados acerca do alistamento militar do Brasil
+    numeric_colname : str
+        Nome da coluna do DataFrame que contem dados numéricos.
+    Returns
+    -------
+        merged_army_height_df : pd.DataFrame
+            Um Dataframe que contem uma coluna da altura em conjunto com os dados dos estados brasileiros 
+    Raises
+    -----
+    ...
     '''
     # código temporário
     army_df = army_df.dropna(subset=[numeric_colname])
@@ -169,8 +231,23 @@ def create_correlation_matrix(army_df,hum_measures_list):
         print('O seguinte problema ocorreu: ',str(e))
         return None
 
-def get_age(army_df,birth_date_colname):
+def get_age(army_df: pd.DataFrame ,birth_date_colname: str)-> pd.DataFrame:
     '''
+    Calcula a idade para cada umas dos registros presentes na coluna.
+    
+    Parameters
+    ----------
+    army_df: pd.DataFrame
+        Arquivo que contem os dados acerca do alistamento militar do Brasil
+    birth_date_colname : str
+        Nome da coluna do DataFrame que contem a data de nascimento.
+    Returns
+    -------
+        army_age_df : pd.DataFrame
+            Um DataFrame que contém a idade de cada um dos registros."
+    Raises
+    -----
+    ...
     '''
     # Tem que fazer o tartamento dos dados para ver 
     current_year = dt.datetime.today().year
@@ -192,6 +269,7 @@ def get_age(army_df,birth_date_colname):
     
 def create_age_histogram(army_age_df):
     '''
+    Perguntar pro monitor!
     '''
     try:
         for val in army_age_df['IDADE']:
@@ -208,11 +286,10 @@ def create_age_histogram(army_age_df):
     max_age = army_age_df['IDADE'].quantile(0.98)
     bin_width = 1    
     x_range = (min_age, max_age + 2)
-
     try:
         plt.hist(
             army_age_df['IDADE'],
-            bins=np.arange(min_age, max_age + bin_width, bin_width),  # Define custom bin edges
+            bins=np.arange(min_age, max_age + bin_width, bin_width),
             facecolor='#1d91c0',
             edgecolor='black',
             linewidth=1

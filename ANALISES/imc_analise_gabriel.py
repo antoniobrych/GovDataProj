@@ -7,7 +7,7 @@ from matplotlib.ticker import FuncFormatter
 import numpy as np
 import pandas as pd
 
-# Baixa os dados caso nao estejam baixados localmente (demora pra baixar).
+# Baixa os dados caso nao estejam baixados localmente(demora pra baixar). Pasta com os arquivos esta adicionada no GitHub.
 dd.download_alldata(['PESO','ALTURA','DISPENSA'])
 
 # Lista com os dfs de cada ano.

@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from utils_tomas import get_age, get_state_coordinates, merge_height_geography_df,create_height_heatmap,get_stats,create_correlation_matrix
+from utils_tomas import get_age, get_state_coordinates, merge_height_geography_df,create_height_heatmap,get_stats,create_correlation_matrix,create_age_histogram
 
 class TestMergeData(unittest.TestCase):
     '''
@@ -190,6 +190,88 @@ class TestCorrelationMatrixCreation(unittest.TestCase):
         # Não sei oq escrever aqui
         pass
 
+class TestGetAge(unittest.TestCase):
+    '''
+    Classe de teste para a funcao create_correlation_matrix get_age
+    '''
+    def setUp(self):
+        self.df_1 = pd.read_csv('sermil2022.csv')
+
+    def test_get_stats_data_correct(self):
+        '''
+        Teste com a funcao que retorna um pd.Series
+        '''
+        result = get_age(self.df_1, 'ANO_NASCIMENTO')
+        self.assertFalse(result.empty)
+
+    def test_numeric_small_values(self):
+        '''
+        Teste com a funcao, passando valores nulos para a coluna das Alturas
+        '''
+        test_df = self.df_1.copy()
+        test_df.loc[0,"ANO_NASCIMENTO"] = 1900
+        result = get_age(test_df,'ANO_NASCIMENTO')
+        self.assertIsNone(result)
+
+    def test_column_existence(self):
+        '''
+        Teste com a funcao merge passando valores negativos para a coluna das Alturas
+        '''
+        test_df = self.df_1.copy()
+        test_df.rename({"ANO_RESIDENCIA": "Data_nascimento"},axis=1, inplace=True)
+        result = get_age(test_df,'ANO_RESIDENCIA')
+        self.assertIsNone(result)
+
+    def tearDown(self):
+        # Não sei oq escrever aqui
+        pass
+
+class TestAgeHistogramCreation():
+    '''
+    Classe de teste para a funcao create_correlation_matrix
+    '''
+    def setUp(self):
+        self.df_1 = pd.read_csv('sermil2022.csv')
+        self.df_2 = get_age(self.df_1,'ANO_NASCIMENTO')
+
+    def test_agehist_correct(self):
+        '''
+        Teste com a funcao merge entre dois dataframes
+        '''
+        result = create_age_histogram(self.df_2)
+        self.assertTrue(result)
+
+    def test_column_existence(self):
+        '''
+        Teste com a funcao merge passando valores negativos para a coluna das Alturas
+        '''
+        test_df = self.df_2.copy()
+        test_df.rename({"IDADE": "Age"},axis=1, inplace=True)
+        result = create_age_histogram(test_df,'IDADE')
+        self.assertIsNone(result)
+
+    def test_age_values_zeros(self):
+        '''
+        Teste com a funcao merge passando valores nulos para a coluna das Alturas
+        '''
+        test_df = self.df_2.copy()
+        test_df.loc[0,"IDADE"] = 0
+        result = create_age_histogram(test_df,'IDADE')
+        self.assertIsNone(result)
+
+    def test_age_values_negative(self):
+        '''
+        Teste com a funcao merge passando valores negativos para a coluna das Alturas
+        '''
+        test_df = self.df_2.copy()
+        test_df.loc[0,"IDADE"] = -19
+        result = create_age_histogram(test_df,'IDADE')
+        self.assertIsNone(result)
+        
+    def tearDown(self):
+        # Não sei oq escrever aqui
+        pass  
+    
 if __name__ == '__main__':
     unittest.main()
 

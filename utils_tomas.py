@@ -326,7 +326,7 @@ def get_age(army_df: pd.DataFrame, birth_date_colname: str) -> pd.DataFrame:
         return army_age_df
 
 
-def create_age_histogram(army_age_df) -> bool:
+def create_age_histogram(army_age_df: pd.Series) -> bool:
     '''
     Perguntar pro monitor!
     '''

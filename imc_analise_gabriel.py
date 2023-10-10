@@ -1,9 +1,9 @@
 from downloaddata import download_alldata
-from utils_gabriel import save_data_in_list, create_imc, df_allyears, filtra_equal, mean, median, categorize_series,\
-percentage_value_counts, percentage_formatter
+from utils_gabriel import save_data_in_list, create_imc, percentage_value_counts, percentage_formatter, df_allyears
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
+import pandas as pd
 
 # Baixa os dados caso nao estejam baixados localmente (demora pra baixar).
 download_alldata(['PESO','ALTURA','DISPENSA'])
@@ -18,16 +18,8 @@ df = df_allyears(dfs)
 df = create_imc(df, 'ALTURA', 'PESO')
 
 # Dividiu se em uma tabela para os dispensados e outra para os que nao foram.
-dispensados = filtra_equal(df, 'DISPENSA', 'Com dispensa')
-recrutados = filtra_equal(df, 'DISPENSA', 'Sem dispensa')
-
-# A fim de explorar os dados calcula-se a media.
-media_imc_dispensados = mean(dispensados,'IMC')
-media_imc_recrutados = mean(recrutados,'IMC')
-
-# A fim de explorar os dados calcula-se a mediana.
-mediana_imc_dispensados = median(dispensados,'IMC')
-mediana_imc_recrutados = median(recrutados,'IMC')
+dispensados = df[df['DISPENSA'] == 'Com dispensa']
+recrutados = df[df['DISPENSA'] == 'Sem dispensa']
 
 # Duas séries pandas para visualização.
 serie_dispensados = dispensados.loc[:,'IMC']
@@ -38,8 +30,8 @@ intervalo = [0, 18.5, 24.9, 29.9, 34.9, 39.9, float('inf')]
 rotulos = ['Abaixo do peso', 'Peso normal', 'Sobrepeso', 'Obesidade grau I', 'Obesidade grau II', 'Obesidade grau III']
 
 # Serie panda que substitui o valor do imc pela categoria que ele se encontra.
-dispensados_categorizado_imc = categorize_series(serie_dispensados, intervalo, rotulos)
-recrutados_categorizado_imc = categorize_series(serie_recrutados, intervalo, rotulos)
+dispensados_categorizado_imc = pd.cut(serie_dispensados, bins=intervalo, labels=rotulos)
+recrutados_categorizado_imc = pd.cut(serie_recrutados, bins=intervalo, labels=rotulos)
 
 # Conta os valores em cada categoria e ve a porcentagem em relação ao total de dispensados e recrutados respectivamente.
 contagem_intervalos_dispensados = percentage_value_counts(dispensados_categorizado_imc)

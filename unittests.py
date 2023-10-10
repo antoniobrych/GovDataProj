@@ -2,8 +2,7 @@
 Modulo para testes das funcoes de todo o repositorio.
 '''
 
-from utils_gabriel import create_imc, df_allyears, read_local_data, filtra_equal, mean, median, categorize_series,\
-percentage_value_counts
+from utils_gabriel import create_imc, read_local_data, percentage_value_counts, df_allyears
 import pandas as pd
 from cleandata import make_http_request,process_data
 from downloaddata import download_csv_local
@@ -426,118 +425,9 @@ class TestReadLocalData(unittest.TestCase):
         self.assertFalse(df_com_nulls_removidos.isnull().values.any())
 
         # Remova o arquivo CSV temporário após o teste
-        os.remove(temp_csv_file)
+        os.remove(temp_csv_file)        
+      
 
-
-class TesteFuncaoFiltraEqual(unittest.TestCase):
-    '''
-    Classe de teste para a funcao que filtra tabelas com
-    uma condicao de igualdade.
-    '''
-    def setUp(self):
-        '''
-        Cria um DataFrame de exemplo para os testes.
-        '''
-        data = {'A': [1, 2, 3, 4],
-                'B': ['foo', 'bar', 'foo', 'baz']}
-        self.df = pd.DataFrame(data)
-
-    def test_filtra_sucesso(self):
-        '''
-        Teste dando certo. 
-        '''
-        dados_filtrados = filtra_equal(self.df, 'B', 'foo')
-        self.assertTrue(dados_filtrados.equals(pd.DataFrame({'A': [1, 3], 'B': ['foo', 'foo']})))
-
-    def test_filtra_coluna_nao_encontrada(self):
-        '''
-        Teste com coluna que nao existe no dataset.
-        '''
-        dados_filtrados = filtra_equal(self.df, 'C', 'foo')
-        self.assertEqual(dados_filtrados,None)
-        
-
-class TestMeanFunction(unittest.TestCase):
-    '''
-    Classe de teste para a funcao mean do modulo utils_gabriel.
-    '''
-    def setUp(self):
-        data = {'Valor': [1, 2, 3, 4, 5],
-                'Texto': ['A', 'B', 'C', 'D', 'E']}
-        self.df = pd.DataFrame(data)
-
-    def test_mean_calculation(self):
-        '''
-        Testa o cálculo da média para uma coluna numérica.
-        Verifica se o resultado é uma instância de int ou float e se está correto.
-        '''        
-        media = mean(self.df, 'Valor')
-        self.assertIsInstance(media, (int, float))
-        self.assertAlmostEqual(media, 3.0)
-
-    def test_mean_non_numeric_column(self):
-        '''
-        Testa a função quando aplicada a uma coluna não numérica.
-        Deve levantar uma exceção ValueError.
-        '''     
-        media = mean(self.df, 'Texto')
-        self.assertEqual(media, None)
-        
-
-class TestMedianFunction(unittest.TestCase):
-    '''
-    Classe de teste para a funcao mediana do modulo utils_gabriel
-    '''
-    def setUp(self):
-        data = {'Valor': [1, 2, 3, 4, 5],
-                'Texto': ['A', 'B', 'C', 'D', 'E']}
-        self.df = pd.DataFrame(data)
-
-    def test_median_calculation(self):
-        '''
-        Testa o cálculo da mediana para uma coluna numérica.
-        Verifica se o resultado é uma instância de int ou float e se está correto.
-        '''
-        mediana = median(self.df, 'Valor')
-        self.assertIsInstance(mediana, (int, float))
-        self.assertAlmostEqual(mediana, 3.0)
-
-    def test_median_non_numeric_column(self):
-        '''
-        Testa a função quando aplicada a uma coluna não numérica.
-        Deve levantar uma exceção ValueError.
-        '''
-        mediana = median(self.df, 'Texto')
-        self.assertEqual(mediana, None)
-        
-
-class TestCategorizeSeries(unittest.TestCase):
-    '''
-    Classe de teste para a funcao categorize_series do modulo utils_gabriel
-    '''
-    def setUp(self):
-        self.dados = pd.Series([22, 27, 31, 18, 29, 24, 35, 21, 26, 28])
-        self.limites_personalizados = [0, 18.5, 24.9, 29.9, 34.9, 39.9, float('inf')]
-        self.rotulos_personalizados = ['Abaixo do peso', 'Peso normal', 'Sobrepeso', 'Obesidade Grau I', 'Obesidade Grau II', 'Obesidade Grau III']
-    
-    def test_labels_bins_correct(self):
-        '''
-        Teste com as listas de labels e bins nos tamanhos corretos.
-        '''
-        resultado = categorize_series(self.dados,self.limites_personalizados,self.rotulos_personalizados)
-        self.assertIsInstance(resultado, pd.Series)
-    
-    def test_labels_bins_incorrect(self):
-        '''
-        Teste com as listas de labels e bins nos tamanhos incorretos.
-        '''
-        self.dados = pd.Series([1,2,3,4,5])
-        self.bins = [1,3,5,7]
-        self.labels = ['bom','ruim']
-        result = categorize_series(self.dados, self.bins, self.labels)
-        self.assertEqual(result,None)
-        
-        
 class TestPercentageValueCounts(unittest.TestCase):
     '''
     Classe de teste para a funcao percentage_value_counts.

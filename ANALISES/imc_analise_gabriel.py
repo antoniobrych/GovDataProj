@@ -1,21 +1,23 @@
-from downloaddata import download_alldata
-from utils_gabriel import save_data_in_list, create_imc, percentage_value_counts, percentage_formatter, df_allyears
+import sys
+sys.path.append('C:/Users/Home/GovDataProj')
+import downloaddata as dd
+import utilsgabriel as ug
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
 import pandas as pd
 
 # Baixa os dados caso nao estejam baixados localmente (demora pra baixar).
-download_alldata(['PESO','ALTURA','DISPENSA'])
+dd.download_alldata(['PESO','ALTURA','DISPENSA'])
 
 # Lista com os dfs de cada ano.
-dfs = save_data_in_list()
+dfs = ug.save_data_in_list()
 
 # Data Frame que concatenou todos os anos.
-df = df_allyears(dfs)
+df = ug.df_allyears(dfs)
 
 # Novo Data Frame com a coluna imc e a altura em metros.
-df = create_imc(df, 'ALTURA', 'PESO')
+df = ug.create_imc(df, 'ALTURA', 'PESO')
 
 # Dividiu se em uma tabela para os dispensados e outra para os que nao foram.
 dispensados = df[df['DISPENSA'] == 'Com dispensa']
@@ -34,8 +36,8 @@ dispensados_categorizado_imc = pd.cut(serie_dispensados, bins=intervalo, labels=
 recrutados_categorizado_imc = pd.cut(serie_recrutados, bins=intervalo, labels=rotulos)
 
 # Conta os valores em cada categoria e ve a porcentagem em relação ao total de dispensados e recrutados respectivamente.
-contagem_intervalos_dispensados = percentage_value_counts(dispensados_categorizado_imc)
-contagem_intervalos_recrutados = percentage_value_counts(recrutados_categorizado_imc)
+contagem_intervalos_dispensados = ug.percentage_value_counts(dispensados_categorizado_imc)
+contagem_intervalos_recrutados = ug.percentage_value_counts(recrutados_categorizado_imc)
 
 # Coloca a serie na ordem da tabela de IMC
 contagem_intervalos_dispensados_reordenado =contagem_intervalos_dispensados.reindex(rotulos)
@@ -54,14 +56,13 @@ posicoes_recrutados = posicoes - largura_barra / 2
 posicoes_dispensados = posicoes + largura_barra / 2
 
 # As barras do gráfico, verde para os dados dos Recrutados e cinza para os dados dos Dispensados
-plt.bar(x=posicoes_recrutados,width=largura_barra, label='Recrutados',height=porcentagens_recrutados,color='green')
-plt.bar(x=posicoes_dispensados,width=largura_barra, label='Dispensados',height=porcentagens_dispensados,color='gray')
+plt.bar(x=posicoes_recrutados,width=largura_barra, label='Recrutados',height=porcentagens_recrutados,color='green',alpha=0.8)
+plt.bar(x=posicoes_dispensados,width=largura_barra, label='Dispensados',height=porcentagens_dispensados,color='gray',alpha=0.4)
 
 # Configurando o gráfico
-plt.title("Recrutados vs. Dispensados")
 plt.xticks(rotation=45)
 plt.ylim(0,1)
-plt.gca().yaxis.set_major_formatter(FuncFormatter(percentage_formatter))
+plt.gca().yaxis.set_major_formatter(FuncFormatter(ug.percentage_formatter))
 plt.xticks(posicoes, rotulos, rotation=45)
 plt.legend()
 plt.tight_layout()

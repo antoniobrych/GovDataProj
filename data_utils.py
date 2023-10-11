@@ -12,7 +12,7 @@ import datetime as dt
 import os
 import doctest
 
-def concatenate_last_10_csv_files(folder, destination_folder):
+def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->pd.DataFrame:
     """
     Parameters
     ----------
@@ -22,6 +22,9 @@ def concatenate_last_10_csv_files(folder, destination_folder):
     destination_folder : str
         Diretório da pasta destino dos arquivos concatenados.
 
+    n : int , optional
+        n últimos arquivos a serem concatenados, por default n = 10.
+
     Returns
     -------
     pd.DataFrame
@@ -29,7 +32,7 @@ def concatenate_last_10_csv_files(folder, destination_folder):
 
     Example
     -------
-    >>> result = concatenate_last_10_csv_files('data', 'data_concat')
+    >>> result = concatenate_last_n_csv_files('data', 'data_concat',10)
     >>> result.shape[0] > 0
     True
     """
@@ -40,17 +43,17 @@ def concatenate_last_10_csv_files(folder, destination_folder):
     csv_files = [f for f in all_files if f.endswith('.csv')]
     sorted_filenames = sorted(csv_files, key=lambda x: int(x[6:10]))
     
-    # Get the last 5 CSV files
-    last_10_csv_files = sorted_filenames[5:]
+    # Get the last n CSV files
+    last_n_csv_files = sorted_filenames[n:]
     
     # Initialize an empty DataFrame to store the concatenated data
     concatenated_data = pd.DataFrame()
     # Concatenate the CSV files
     counter = 0
-    for csv_file in last_10_csv_files:
+    for csv_file in last_n_csv_files:
         file_path = os.path.join(folder, csv_file)
-        data = pd.read_csv(file_path, encoding='latin1')
-        data['COLLECTION_YEAR'] = int(last_10_csv_files[counter][6:10])
+        data = pd.read_csv(file_path, encoding='latin1',low_memory=False)
+        data['ANO_COLETA'] = int(last_n_csv_files[counter][6:10])
         concatenated_data = pd.concat([concatenated_data, data], ignore_index=True)
         counter += 1
 
@@ -59,4 +62,4 @@ def concatenate_last_10_csv_files(folder, destination_folder):
 
 # Run tests with doctest
 if __name__ == "__main__":
-    doctest.testmod()
+    doctest.testmod(verbose=True)

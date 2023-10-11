@@ -72,7 +72,9 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
 
-def transformar_coluna(df, coluna, transform_dict):
+
+
+def transform_column(df, coluna, transform_dict):
     """
     Parameters
     ----------
@@ -89,11 +91,31 @@ def transformar_coluna(df, coluna, transform_dict):
     df : pandas.core.frame.DataFrame
         retorna o data frame com as colunas transformadas.
     
-    Exemplo
-    -------
+    Examples
+    --------
+    # Exemplo 1: Transformar a coluna 'ESCOLARIDADE' de acordo com um dicionário
+    >>> import pandas as pd
+    >>> data = {'ESCOLARIDADE': ['Ensino Fundamental', 'Ensino Médio',
+    ...                          'Ensino Superior', 'Mestrado']}
+    >>> df = pd.DataFrame(data)
+    >>> transform_dict = {'Ensino Fundamental': 'Fundamental',
+    ...                   'Ensino Médio': 'Médio', 'Ensino Superior': 'Superior'}
+    >>> resultado = transform_column(df, 'ESCOLARIDADE', transform_dict)
+    >>> list(resultado['ESCOLARIDADE'])  
+    ['Fundamental', 'Médio', 'Superior', 'Mestrado']
+
+    # Exemplo 2: Tentar transformar uma coluna que não existe no DataFrame
     >>> df = pd.read_csv("sermil2022.csv")
-    >>> transformar_coluna(df,"importante")
+    >>> transform_column(df,"importante",{"importante":"urgente"})
     A coluna 'importante' não existe no DataFrame.
+    
+    # Exemplo 3: Transformar uma coluna vazia com um dicionário vazio
+    >>> df = pd.DataFrame({'NOME': []})
+    >>> transform_dict = {}
+    >>> resultado = transform_column(df, 'NOME', transform_dict)
+    >>> list(resultado['NOME'])  
+    []
+    
     """
 
     if coluna not in df.columns:

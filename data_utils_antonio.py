@@ -11,7 +11,6 @@ import seaborn as sns
 import datetime as dt
 import os
 import doctest
-import glob
 
 def concatenate_last_10_csv_files(folder, destination_folder):
     """

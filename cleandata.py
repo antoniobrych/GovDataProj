@@ -2,6 +2,7 @@
 Este modulo Python fornece funcoes para realizar solicitacoes HTTP 
 para obter dados de uma URL e processar dados CSV. Ele pode ser usado 
 para recuperar dados de uma fonte remota e prepara los para analise posterior.
+Tambem pode auxiliar na limpeza de um dataset.
 '''
 
 import io
@@ -35,6 +36,7 @@ def make_http_request(url: str):
     except Exception as erro:
         print("Ocorreu um erro:", str(erro))
         return None
+
 
 def process_data(data: str, dropnull: bool = False, desired_columns: List[str] = None):
     """
@@ -115,6 +117,83 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
     except Exception as erro:
         print("Ocorreu um erro no processamento dos dados:", str(erro))
         return None
+
+
+def clean_dataframe(
+    df,                
+    columns_to_drop: list = None,    
+    columns_to_rename: dict = None,  
+    numeric_columns: list = None,    
+    drop_na: bool = False           
+):
+    '''
+    Faz uma limpeza geral em um dataframe.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        O DataFrame a ser limpo.
+    
+    columns_to_drop : list, optional
+        Lista de colunas a serem removidas. The default is None.
+    
+    columns_to_rename : dict, optional
+        Dicionário de mapeamento de colunas. Chave é o nome da coluna antiga, 
+        valor nome da coluna nova. The default is None.
+    
+    numeric_columns : list, optional
+        Lista de colunas em que os elementos são numéricos. The default is None.
+    
+    drop_na : bool, False by default
+        Se True, remove registros com valor NaN.
+
+    Returns
+    -------
+    cleaned_df : pandas.DataFrame
+        O DataFrame limpo.
+
+    Example
+    -------
+    >>> df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+    >>> columns_to_drop = ['B']
+    >>> columns_to_rename = {'A': 'X', 'C': 'Y'}
+    >>> numeric_columns = ['X', 'Y']
+    >>> cleaned_df = clean_dataframe(df, columns_to_drop, columns_to_rename, numeric_columns, drop_na=False)
+    >>> 'B' in cleaned_df.columns
+    False
+    >>> 'A' in cleaned_df.columns
+    False
+    >>> 'X' in cleaned_df.columns
+    True
+    >>> 'C' in cleaned_df.columns
+    False
+    >>> 'Y' in cleaned_df.columns
+    True    
+    
+    '''
+    
+    # Faz uma cópia do DataFrame para evitar alterações no DataFrame original
+    cleaned_df = df.copy()
+
+    # Remove colunas especificadas
+    if columns_to_drop:
+        cleaned_df = cleaned_df.drop(columns_to_drop, axis=1, errors='ignore')
+
+    # Renomea colunas especificadas
+    if columns_to_rename:
+        cleaned_df = cleaned_df.rename(columns=columns_to_rename)
+
+    # Converte colunas numéricas para tipo numérico
+    if numeric_columns:
+        for col in numeric_columns:
+            cleaned_df[col] = pd.to_numeric(cleaned_df[col], errors='coerce')
+
+    # Remove linhas com valores ausentes se drop_na for True
+    if drop_na:
+        cleaned_df = cleaned_df.dropna()
+
+    return cleaned_df
+
 
 if __name__ == "__main__":
     import doctest

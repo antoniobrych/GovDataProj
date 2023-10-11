@@ -80,7 +80,7 @@ def save_data_in_list(dropna: bool = False,cols: List[str] = None):
     # Lista para armazenar os DataFrames
     dataframes = []
     try:
-        # Loop para ler os arquivos CSV e armazenar os DataFrames
+        # Loop para ler os arquivos CSV e armazenar os DataFrames especicos do trabalho.
         if cols is None:
             for ano in range(2007, 2023):
                 arquivo_csv = f'sermil{ano}.csv'

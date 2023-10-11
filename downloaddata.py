@@ -12,7 +12,8 @@ def download_csv_local(url: str,dropna:bool = False, local_file:str = None ,colu
     '''
     Serve para baixar o CSV localmente de uma URL.
     Permite que voce baixe colunas selecionadas, ou
-    seja, nao baixe todo o csv.
+    seja, nao baixe todo o csv. Utiliza funcoes criadas
+    no modulo cleandata.
 
     Parameters
     ----------

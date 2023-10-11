@@ -1,3 +1,7 @@
+'''
+Modulo apenas para a visualizacao a cerca do IMC.
+'''
+
 import sys
 
 # Trocar o que está dentro do parenteses pelo caminho do seu computador para a pasta do projeto.

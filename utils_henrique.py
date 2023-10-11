@@ -1,10 +1,7 @@
-"""
-Rascunho:
-Gráfico de barras com o nível de escolaridade dos alistados
-"""
-import pandas as pd
+# Funções para preparar o dataframa pra visualização
 
 def take_data(csv_file, columns):
+    import pandas as pd
     """
     Parameters
     ----------
@@ -75,6 +72,7 @@ if __name__ == "__main__":
 
 
 def transform_column(df, coluna, transform_dict):
+    import pandas as pd
     """
     Parameters
     ----------
@@ -127,22 +125,3 @@ def transform_column(df, coluna, transform_dict):
 
     return df
 
-"""
-#transformar isso em func
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Fundamental' if 'Ensino Fundamental' in x else x)
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Médio' if 'Ensino Médio' in x else x)
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Superior' if 'Ensino Superior' in x else x)
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Superior' if 'Mestrado' in x else x)
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Superior' if 'Doutorado' in x else x)
-novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Superior' if 'Pós-Graduaç' in x else x)
-
-#transformar em func pra gerar grafico
-contagem_escolaridade = novo_df['ESCOLARIDADE'].value_counts()
-plt.figure(figsize=(10, 6))  
-contagem_escolaridade.plot(kind='bar')
-plt.title('Distribuição de Escolaridade')
-plt.xlabel('Grau de Escolaridade')
-plt.ylabel('Número de Pessoas')
-
-plt.show()
-"""

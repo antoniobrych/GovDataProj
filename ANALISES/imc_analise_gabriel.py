@@ -1,5 +1,8 @@
 import sys
-sys.path.append('C:/Users/Home/GovDataProj')
+
+# Trocar o que está dentro do parenteses pelo caminho do seu computador para a pasta do projeto.
+sys.path.append('C:/Users/B51095/GovDataProj')
+
 import downloaddata as dd
 import utilsgabriel as ug
 import matplotlib.pyplot as plt
@@ -7,7 +10,8 @@ from matplotlib.ticker import FuncFormatter
 import numpy as np
 import pandas as pd
 
-# Baixa os dados caso nao estejam baixados localmente(demora pra baixar). Pasta com os arquivos esta adicionada no GitHub.
+# Pasta chamada data_gabriel com os arquivos esta adicionada no GitHub(basta arrastar os arquivos csv para a pasta ANALISES)
+# Baixa os dados caso nao estejam baixados localmente(demora pra baixar).
 dd.download_alldata(['PESO','ALTURA','DISPENSA'])
 
 # Lista com os dfs de cada ano.

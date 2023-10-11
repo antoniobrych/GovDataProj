@@ -72,6 +72,39 @@ if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
 
+def transformar_coluna(df, coluna, transform_dict):
+    """
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+        Recebe um dataframe que terá colunas transformadas.
+    coluna : str
+        Recebe o nome da coluna que queremos transformar.
+    transform_dict : dict
+        Recebe um dicionário com as chaves sendo itens a serem tranformados, e 
+        os valores sendo a transformação.
+
+    Returns
+    -------
+    df : pandas.core.frame.DataFrame
+        retorna o data frame com as colunas transformadas.
+    
+    Exemplo
+    -------
+    >>> df = pd.read_csv("sermil2022.csv")
+    >>> transformar_coluna(df,"importante")
+    A coluna 'importante' não existe no DataFrame.
+    """
+
+    if coluna not in df.columns:
+        print(f"A coluna '{coluna}' não existe no DataFrame.")
+        return None
+
+    for original, transformado in transform_dict.items():
+        df[coluna] = df[coluna].str.replace('.*' + original + '.*', transformado, regex=True)
+
+    return df
+
 """
 #transformar isso em func
 novo_df['ESCOLARIDADE'] = novo_df['ESCOLARIDADE'].apply(lambda x: 'Ensino Fundamental' if 'Ensino Fundamental' in x else x)

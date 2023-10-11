@@ -42,14 +42,14 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
 
     Parameters
     ----------
-    dados_csv : str
+    data : str
         Os dados CSV como uma string.
     
     dropnull : bool, False by default
         O dropnull permite que tire as linhas com valores nulos da tabela. Por padrão ele é False 
         e nao tira as linhas com valores nulos, mas se for True ele tira as linhas com valores nulos.
     
-    desired_columss : list, optional
+    desired_columns : list, optional
         Lista com os nomes das colunas desejadas, se nao especificado, todas as colunas serao lidas.
     
     Returns
@@ -58,11 +58,15 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
         Um DataFrame do pandas contendo os dados processados se a operacao for bem-sucedida.
         None, se ocorrer uma falha no processamento.
     
+    Raises
+    ------
+    TypeError
+        Se o tipo de elementos da lista passada para o parâmetro desired_columns for diferente de str.
+    
     Example
     -------
-    Exemplo de processamento de dados com colunas invalidas:
+    Exemplo de processamento de dados com colunas inválidas:
     
-    >>> # Exemplo de dados CSV como uma string
     >>> dados_teste = '''
     ... Nome,Idade,Sexo
     ... João,30,M
@@ -71,8 +75,8 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
     ... Ana,28,F
     ... '''
     >>> colunas_invalidas = ['Nome', 1, 'Idade']
-    >>> process_data(dados_teste, colunas_invalidas)
-    As colunas passadas não estão no formato adequado
+    >>> process_data(dados_teste, desired_columns=colunas_invalidas)
+    Erro: Todos os elementos da lista de colunas devem ser strings.
     
     Exemplo de processamento bem-sucedido de dados:
     
@@ -94,22 +98,20 @@ def process_data(data: str, dropnull: bool = False, desired_columns: List[str] =
     """
     try:
         if desired_columns is not None:
-            #Não permite que o nome das colunas sejam diferentes de strings
+            # Não permite que o nome das colunas sejam diferentes de strings
             for el in desired_columns:
-                if type(el) != str:
-                    raise TypeError
-            dados = pd.read_csv(io.StringIO(data), usecols=desired_columns, error_bad_lines=False)
+                if not isinstance(el, str):
+                    raise TypeError("Todos os elementos da lista de colunas devem ser strings.")
         else:
-            dados = pd.read_csv(io.StringIO(data), error_bad_lines=False)
-
-        if dropnull is True:
+            desired_columns = None
+        dados = pd.read_csv(io.StringIO(data), usecols=desired_columns, error_bad_lines=False)
+        if dropnull:
             cleandados = dados.dropna()
-        if dropnull is False:
-            cleandados = dados
-            
+        else:
+            cleandados = dados 
         return cleandados
-    except TypeError:
-        print("As colunas passadas não estão no formato adequado")
+    except TypeError as e:
+        print("Erro:", e)
     except Exception as erro:
         print("Ocorreu um erro no processamento dos dados:", str(erro))
         return None

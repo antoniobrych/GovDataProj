@@ -405,6 +405,3 @@ def create_age_histogram(army_age_df: pd.Series) -> bool:
     except Exception as e:
         print('Ocorreu um erro: ', str(e))
         return False
-
-if __name__ == '__main__':
-    unittest.main()

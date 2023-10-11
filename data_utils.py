@@ -14,6 +14,11 @@ import doctest
 
 def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->pd.DataFrame:
     """
+    Função que concatena os n últimos arquivos csv em uma pasta,
+    onde n é um número inteiro escolhido pelo usuário,
+    se n for um número maior que o de registros disponíveis,
+    a função concatena todos os arquivos.
+
     Parameters
     ----------
     folder : str
@@ -60,6 +65,67 @@ def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->p
     concatenated_data.to_csv(os.path.join(destination_folder, 'SERMIL_5_ANOS.csv'))
     return concatenated_data
 
+def integrity_check(folder:str,begin:int=2012,end:int=2022):
+    """
+    Função que verifica se todos os arquivos csv de múltiplos
+    anos (onde no título ex.: 'sermil2023' do arquivo está escrito o ano), estão
+    devidamente presentes. 
+
+    Parameters
+    ----------
+    folder : str
+        Diretório da pasta que contém todos os arquivos CSV.
+
+    begin : int, optional
+        Data de arquivo mais antigo que deveria estar presente na pasta
+
+    end : str , optional
+        Data de arquivo mais recente que deveria estar presente na pasta
+
+    Returns
+    -------
+    bool
+        Verdadeiro ou Falso, sucesso do teste de integridade.
+
+    Example
+    -------
+    >>> integrity_result = integrity_check(folder='data',begin=1999,end=2023)
+    >>> integrity_result == False
+    True
+    >>> integrity_result = integrity_check(folder='data',begin=1882,end=2023)
+    >>> integrity_result == False
+    True
+    >>> integrity_result = integrity_check(folder='data',begin=-12,end=2023)
+    >>> integrity_result == False
+    True
+    >>> integrity_result = integrity_check(folder='data',begin=2010,end=2023)
+    >>> integrity_result == False
+    True
+    """
+    #Correct typing mistake
+    if (begin > end):
+        end = begin
+
+    # Get a list of all files in the folder
+    all_files = os.listdir(folder)
+    begin = abs(int(begin))
+    end = abs(int(end))
+    # Filter files to only get CSV files and sort them by modification date
+    csv_files = [f for f in all_files if f.endswith('.csv')]
+    sorted_filenames_all = sorted(csv_files, key=lambda x: int(x[6:10]))
+    sorted_filenames_all[0]
+    sorted_filenames = sorted_filenames_all[-(end-begin)-1:]
+    if (end-begin)>len(sorted_filenames):
+        return False
+    #Counter that updates checked files
+    for file_name in sorted_filenames:
+        if int(file_name[6:10])==begin:
+            sorted_filenames = sorted_filenames.remove(file_name)
+        begin += 1
+    #begin == end, implies that no file is missing, all years were verified.
+    if  begin == end:
+        return True
+    return False
 # Run tests with doctest
 if __name__ == "__main__":
     doctest.testmod(verbose=True)

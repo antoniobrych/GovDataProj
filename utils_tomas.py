@@ -1,44 +1,45 @@
 '''
-Esse módulo contem funções que fornecem análises estatística e visualizações gráficas 
+Este módulo contém funções que fornecem análises estatísticas e visualizações gráficas
 '''
+import unittest
 import pandas as pd
 import numpy as np
 import datetime as dt
-from typing import List,Union
+from typing import List, Union
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import datetime as dt
 import os
-
 
 def get_state_coordinates(path: str, dropnull: bool = False) -> gpd.GeoDataFrame:
     '''
-    Lê o um arquivo gpkg e cria um GeoDataFrame 
+    Lê um arquivo gpkg e cria um GeoDataFrame.
 
     Parameters
     ----------
     path: str
-        O caminho do arquivo csv que será lido.
+        O caminho do arquivo gpkg que será lido.
     dropnull : bool
-        Caso True, serão removidas as linhas nulas, se False, as linhas com valores nulos não  não serão removidas..
+        Caso True, remove as linhas nulas; se False, mantém as linhas com valores nulos.
+        
     Returns
     -------
-        clean_geobrazil_df : gpd.GeoDataFrame
-            Um Dataframe que contem uma coluna dos estados brasileiros e outra com as suas formas poligonais
+    gpd.GeoDataFrame
+        Um GeoDataFrame contendo informações dos estados brasileiros.
+
     Raises
     -----
-    ...
+    NameError
+        Se o arquivo não existir ou o caminho estiver incorreto.
     '''
     try:
         if os.path.exists(path):
             geobrazil_df = gpd.read_file(path, layer="lim_unidade_federacao_a")
-            geobrazil_df.rename({"sigla": "UF_RESIDENCIA"},
-                                axis=1, inplace=True)
+            geobrazil_df.rename({"sigla": "UF_RESIDENCIA"}, axis=1, inplace=True)
         else:
-            raise NameError(
-                "O nome do arquivo ou o caminho informado está errado")
-        if dropnull == True:
+            raise NameError("O nome do arquivo ou o caminho informado está errado")
+        
+        if dropnull:
             clean_geobrazil_df = geobrazil_df.dropna(axis=1)
         else:
             clean_geobrazil_df = geobrazil_df
@@ -46,126 +47,128 @@ def get_state_coordinates(path: str, dropnull: bool = False) -> gpd.GeoDataFrame
         print(error)
         return None
     except Exception as e:
-        print("Ocorreu um erro, e não é o nome do arquivo. O erro é: ", str(e))
+        print("Ocorreu um erro: ", str(e))
         return None
     else:
         return clean_geobrazil_df
 
-
 def merge_height_geography_df(army_df: pd.DataFrame, height_colname: str, state_colname: str, geobrazil_df: gpd.GeoDataFrame) -> pd.DataFrame:
     '''
-    Faz o merge do DataFrame do alistamento militar com um GeoDataFrame.
+    Realiza o merge do DataFrame de alistamento militar com um GeoDataFrame contendo informações geográficas.
 
     Parameters
     ----------
     army_df: pd.DataFrame
-        Arquivo que contem os dados acerca do alistamento militar do Brasil
+        DataFrame com dados do alistamento militar.
     height_colname : str
-        Nome da coluna do DataFrame que representa a altura.
+        Nome da coluna no DataFrame que representa a altura.
     state_colname : str
-        Nome da coluna do DataFrame que representa os estados.
+        Nome da coluna no DataFrame que representa os estados.
     geobrazil_df : gpd.GeoDataFrame
-        Arquivo que contem os dados acerca dos estados do Brasil
+        GeoDataFrame com dados dos estados brasileiros.
+
     Returns
     -------
-        merged_army_height_df : pd.DataFrame
-            Um Dataframe que contem uma coluna da altura em conjunto com os dados dos estados brasileiros 
+    pd.DataFrame
+        Um DataFrame que combina informações de altura com dados geográficos dos estados brasileiros.
+
     Raises
     -----
-    ...
+    KeyError
+        Se as colunas especificadas não existirem no DataFrame fornecido.
     '''
     try:
         if height_colname not in army_df.columns:
-            raise KeyError("A coluna especificada não existe no dataframe: ", height_colname)
+            raise KeyError("A coluna especificada não existe no DataFrame: ", height_colname)
     except KeyError as ke:
-        print("Error:", str(ke))
+        print("Erro: ", str(ke))
         return None
+
     try:
         if state_colname not in army_df.columns:
-            raise KeyError("A coluna especificada não existe no dataframe: ", height_colname)
+            raise KeyError("A coluna especificada não existe no DataFrame: ", state_colname)
     except KeyError as ke:
-        print("Error:", str(ke))
+        print("Erro: ", str(ke))
         return None
+
     # Linha abaixo é temporária
     army_df = army_df.dropna(subset=[height_colname])
+
     try:
         for val in army_df[height_colname]:
-            assert isinstance(
-                val, (int, float)), f"Erro, elementos da coluna {height_colname} não são números"
+            assert isinstance(val, (int, float)), f"Erro, elementos da coluna {height_colname} não são números"
             assert val != 0, "Erro, altura não pode ser zero"
             assert val > 0, "Erro, altura deve ser maior que zero."
     except AssertionError as error:
         print(error)
         return None
     except Exception as e:
-        print("Ocorreu um erro. O erro é: ", str(e))
+        print("Ocorreu um erro: ", str(e))
         return None
     else:
-        tmp_df = army_df.groupby(state_colname)[
-            height_colname].mean().reset_index()
+        tmp_df = army_df.groupby(state_colname)[height_colname].mean().reset_index()
         tmp_df.columns = [state_colname, height_colname]
         tmp_df = tmp_df[tmp_df[state_colname] != 'KK']  # O estado não existe
+
         try:
-            merged_army_height_df = geobrazil_df.merge(
-                tmp_df, on=state_colname, how='right')
+            merged_army_height_df = geobrazil_df.merge(tmp_df, on=state_colname, how='right')
         except pd.errors.MergeError as e:
             print('Merge não estabelecido')
             return None
         except KeyError as ke:
-            print("Ocorreu um erro. O erro é: ", str(ke))
+            print("Ocorreu um erro: ", str(ke))
+            return None
+
         return merged_army_height_df
 
-
-def create_height_heatmap(merged_army_height_df: pd.DataFrame,height_colname: str,state_colname: str):
+def create_height_heatmap(merged_army_height_df: pd.DataFrame, height_colname: str, state_colname: str) -> bool:
     '''
-    Cria um gráfico do mapa de calor brasileiro que representa a diferença entre as médias das idades por estado
+    Cria um mapa de calor brasileiro que representa a diferença entre as médias de altura por estado.
 
     Parameters
     ----------
     merged_army_height_df : pd.DataFrame
+        DataFrame combinando informações de altura com dados geográficos dos estados brasileiros.
+    height_colname : str
+        Nome da coluna no DataFrame que representa a altura.
+    state_colname : str
+        Nome da coluna no DataFrame que representa os estados.
 
     Returns
     -------
-    Perguntar pro monitor!!
+    bool
+        Retorna True se o gráfico foi criado com sucesso, False caso contrário.
 
     Raises
     -----
-    ...
+    KeyError
+        Se as colunas especificadas não existirem no DataFrame fornecido.
     '''
     try:
         if height_colname not in merged_army_height_df.columns:
             raise KeyError("A seguinte coluna não existe no DataFrame: ", height_colname)
     except KeyError as ke:
-        print("Error:", str(ke))
+        print("Erro: ", str(ke))
         return None
+
     try:
         if state_colname not in merged_army_height_df.columns:
-            raise KeyError("A seguinte coluna não existe no DataFrame: ", height_colname)
+            raise KeyError("A seguinte coluna não existe no DataFrame: ", state_colname)
     except KeyError as ke:
-        print("Error:", str(ke))
+        print("Erro: ", str(ke))
         return None
-    # código abaixo temporário
+
+    # Código abaixo temporário
     merged_army_height_df = merged_army_height_df.dropna(subset=[height_colname])
+
     for valor in merged_army_height_df[height_colname]:
         try:
-            assert isinstance(
-                valor, (int, float)), f"Erro, elementos da coluna {height_colname} não são números"
+            assert isinstance(valor, (int, float)), f"Erro, elementos da coluna {height_colname} não são números"
             assert valor != 0, "Erro, altura não pode ser zero"
             assert valor > 0, "Erro, altura deve ser maior que zero."
         except AssertionError as error:
             print(error)
             return None
-    try:
-        for val in merged_army_height_df[state_colname]:
-            try:
-                assert isinstance(
-                    val, (str)), f"Erro, elementos da coluna {height_colname} não são do tipo str"
-            except AssertionError as error:
-                print(error)
-                return None
-    except KeyError as ke:
-        print("A seguinte coluna não existe no Dataframe fornecido: ", str(ke))
-        return None
 
     try:
         merged_army_height_df.plot(
@@ -175,7 +178,7 @@ def create_height_heatmap(merged_army_height_df: pd.DataFrame,height_colname: st
             legend=True,
             edgecolor='black',
             vmin=merged_army_height_df[height_colname].min(),
-            vmax=merged_army_height_df[height_colname].max(),
+            vmax=merged_army_height_df[height_colname].max()
         )
         plt.title("Mapa de Calor das Alturas das Pessoas por Estado", fontsize=16)
         plt.axis('off')
@@ -183,46 +186,49 @@ def create_height_heatmap(merged_army_height_df: pd.DataFrame,height_colname: st
         return True
     except Exception as e:
         print('Um erro aconteceu: ', str(e))
-        return None
-
+        return False
 
 def get_stats(army_df: pd.DataFrame, numeric_colname: str) -> pd.Series:
     '''
-    Faz uma análise estatística da coluna do dataframe em questão.
+    Realiza análise estatística de uma coluna em um DataFrame.
 
     Parameters
     ----------
     army_df: pd.DataFrame
-        Arquivo que contem os dados acerca do alistamento militar do Brasil
+        DataFrame com dados do alistamento militar.
     numeric_colname : str
-        Nome da coluna do DataFrame que contem dados numéricos.
+        Nome da coluna no DataFrame com dados numéricos.
+
     Returns
     -------
-        merged_army_height_df : pd.DataFrame
-            Um Dataframe que contem uma coluna da altura em conjunto com os dados dos estados brasileiros 
+    pd.Series
+        Uma série com estatísticas da coluna especificada.
+
     Raises
     -----
-    ...
+    KeyError
+        Se a coluna especificada não existir no DataFrame.
     '''
-    # código temporário
+    # Código temporário
     army_df = army_df.dropna(subset=[numeric_colname])
+
     try:
         if numeric_colname not in army_df.columns:
             raise KeyError("A seguinte coluna não existe no DataFrame: ", numeric_colname)
     except KeyError as ke:
         print("Erro: ", str(ke))
         return None
+
     try:
         for val in army_df[numeric_colname]:
-            assert isinstance(
-                val, (int, float)), f"Erro, elementos da coluna {numeric_colname} não são números"
-            assert val != 0, "Erro, altura não pode ser zero"
-            assert val > 0, "Erro, altura deve ser maior que zero."
+            assert isinstance(val, (int, float)), f"Erro, elementos da coluna {numeric_colname} não são números"
+            assert val != 0, "Erro, valor não pode ser zero"
+            assert val > 0, "Erro, valor deve ser maior que zero."
     except AssertionError as error:
         print(error)
         return None
     except Exception as e:
-        print("Ocorreu um erro. O erro é: ", str(e))
+        print("Ocorreu um erro: ", str(e))
         return None
     else:
         try:
@@ -233,35 +239,53 @@ def get_stats(army_df: pd.DataFrame, numeric_colname: str) -> pd.Series:
         else:
             return col_summary
 
-
 def create_correlation_matrix(army_df: pd.DataFrame, hum_measures_list: List[str]) -> bool:
     '''
+    Cria uma matriz de correlação para medidas físicas humanas.
+
+    Parameters
+    ----------
+    army_df: pd.DataFrame
+        DataFrame com dados de medidas físicas humanas.
+    hum_measures_list : List[str]
+        Lista de colunas no DataFrame representando medidas físicas.
+
+    Returns
+    -------
+    bool
+        Retorna True se a matriz de correlação foi criada com sucesso, False caso contrário.
+
+    Raises
+    -----
+    KeyError
+        Se as colunas especificadas não existirem no DataFrame fornecido.
     '''
     try:
         for elem in hum_measures_list:
             if elem not in army_df.columns:
                 raise KeyError("A seguinte coluna não existe no DataFrame: ", elem)
     except KeyError as ke:
-        print('Erro: ',str(ke))
+        print('Erro: ', str(ke))
         return None
 
-    # código temporário
+    # Código temporário
     army_df = army_df.dropna(subset=hum_measures_list)
     filtered_army_df = army_df[hum_measures_list]
+
     for col in hum_measures_list:
         try:
             for val in army_df[col]:
-                assert isinstance(
-                    val, (int, float)), f"Erro, elementos da coluna {col} não são números"
+                assert isinstance(val, (int, float)), f"Erro, elementos da coluna {col} não são números"
                 assert val != 0, "As medidas físicas humanas não podem ser iguais a zero."
-                assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+                assert val > 0, "As medidas físicas humanas não podem ser menores ou iguais a zero."
         except AssertionError as error:
             print(error)
             return None
         except Exception as e:
-            print("Ocorreu um erro. O erro é: ", str(e))
+            print("Ocorreu um erro: ", str(e))
             return None
-    # Não sei como melhorar essa try - except para gráficos
+
+    # Não sei como melhorar essa try-except para gráficos
     try:
         corr_matrix = filtered_army_df.corr().round(2)
         cmap = sns.diverging_palette(240, 10, s=150, l=40, n=250)
@@ -276,7 +300,7 @@ def create_correlation_matrix(army_df: pd.DataFrame, hum_measures_list: List[str
             fmt=".2f",
             linewidths=0.5
         )
-        plt.title("Matrix de correlação dos atributos físicos", fontsize=16)
+        plt.title("Matriz de Correlação das Medidas Físicas Humanas", fontsize=16)
         plt.xticks(rotation=45, ha="right")
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
@@ -285,67 +309,82 @@ def create_correlation_matrix(army_df: pd.DataFrame, hum_measures_list: List[str
         return True
     except Exception as e:
         print('O seguinte problema ocorreu: ', str(e))
-        return None
+        return False
 
-
-def get_age(army_df: pd.DataFrame, birth_date_colname: str) -> pd.DataFrame:
+def get_age(army_df: pd.DataFrame, birth_date_colname: str) -> pd.Series:
     '''
-    Calcula a idade para cada umas dos registros presentes na coluna.
+    Calcula a idade a partir da data de nascimento em um DataFrame.
 
     Parameters
     ----------
     army_df: pd.DataFrame
-        Arquivo que contem os dados acerca do alistamento militar do Brasil
+        DataFrame com dados do alistamento militar.
     birth_date_colname : str
-        Nome da coluna do DataFrame que contem a data de nascimento.
+        Nome da coluna no DataFrame que contém a data de nascimento.
+
     Returns
     -------
-        army_age_df : pd.DataFrame
-            Um DataFrame que contém a idade de cada um dos registros."
+    pd.DataFrame
+        Um DataFrame contendo a idade calculada de acordo com a data de nascimento.
+
     Raises
     -----
     ...
     '''
-    # Tem que fazer o tartamento dos dados para ver
+    # Tratamento temporário dos dados é necessário para verificar os tipos
     current_year = dt.datetime.today().year
     age_list = []
+
     try:
         for birth_date in army_df[birth_date_colname]:
-            assert isinstance(
-                birth_date, (int, float)), f"Erro, elementos da coluna {birth_date_colname} não são números"
+            assert isinstance(birth_date, (int, float)), f"Erro, elementos da coluna {birth_date_colname} não são números"
             assert birth_date > 1920, "Erro, data de nascimento deve ser maior que 1920."
             age_list.append(current_year - birth_date)
     except AssertionError as error:
         print(error)
         return None
     except Exception as e:
-        print("Ocorreu um erro, e não é o nome do arquivo. O erro é: ", str(e))
+        print("Ocorreu um erro: ", str(e))
         return None
     else:
         army_age_df = pd.DataFrame(age_list, columns=['IDADE'])
         return army_age_df
 
-
 def create_age_histogram(army_age_df: pd.Series) -> bool:
     '''
-    Perguntar pro monitor!
+    Cria um histograma de idade.
+
+    Parameters
+    ----------
+    army_age_df : pd.Series
+        Uma série com dados de idade.
+
+    Returns
+    -------
+    bool
+        Retorna True se o gráfico foi criado com sucesso, False caso contrário.
+
+    Raises
+    -----
+    ...
     '''
     try:
         for val in army_age_df['IDADE']:
-            assert isinstance(
-                val, (int, float)), f"Erro, elementos da coluna {'IDADE'} não são números"
-            assert val != 0, "A idade não podem ser iguais a zero."
-            assert val > 0, "As medidas físicas humanas não podem menores ou iguais a zero."
+            assert isinstance(val, (int, float)), f"Erro, elementos da coluna {'IDADE'} não são números"
+            assert val != 0, "A idade não pode ser igual a zero."
+            assert val > 0, "A idade deve ser maior que zero."
     except AssertionError as error:
         print(error)
         return None
     except Exception as e:
-        print("Ocorreu um erro. A seguinte coluna não pertence ao Dataframe: ", str(e))
+        print("Ocorreu um erro: ", str(e))
         return None
+
     min_age = army_age_df['IDADE'].min()
     max_age = army_age_df['IDADE'].quantile(0.98)
     bin_width = 1
     x_range = (min_age, max_age + 2)
+
     try:
         plt.hist(
             army_age_df['IDADE'],
@@ -360,13 +399,12 @@ def create_age_histogram(army_age_df: pd.Series) -> bool:
         plt.grid(alpha=0.2, linestyle='-', linewidth=0.6, color='black')
         plt.xlabel('Idade')
         plt.ylabel('Frequência')
-        plt.title('Distribuição de idades')
+        plt.title('Distribuição de Idades')
         plt.show()
         return True
     except Exception as e:
-        print('ocorreu um erro: ', str(e))
+        print('Ocorreu um erro: ', str(e))
+        return False
 
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True)
+if __name__ == '__main__':
+    unittest.main()

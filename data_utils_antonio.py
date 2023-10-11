@@ -1,9 +1,6 @@
 """
-
-Módulo que contém as principais funções
-
-utilizadas por mim no projeto
-
+Module containing the main functions
+used by me in the project
 """
 
 import pandas as pd
@@ -15,45 +12,52 @@ import datetime as dt
 import os
 import doctest
 import glob
-def concatenar_ultimos_10_arquivos_csv(pasta,pasta_destino):
+
+def concatenate_last_10_csv_files(folder, destination_folder):
     """
-    Concatena os últimos 5 arquivos CSV na pasta especificada e retorna o DataFrame resultante.
+    Parameters
+    ----------
+    folder : str
+        Diretório da pasta que contém todos os arquivos CSV.
 
-    Args:
-    pasta (str): O caminho para a pasta contendo os arquivos CSV.
-    pasta_destino (str): Destino para os arquivos CSV concatenados
+    destination_folder : str
+        Diretório da pasta destino dos arquivos concatenados.
 
-    Returns:
-    pd.DataFrame: Um DataFrame contendo os dados concatenados dos últimos 5 arquivos CSV.
-    
-    Exemplo:
-    >>> resultado = concatenar_ultimos_10_arquivos_csv('data','data_concat')
-    >>> resultado.shape[0] > 0
+    Returns
+    -------
+    pd.DataFrame
+        Único DataFrame Pandas com todos os registros dos arquivos.
+
+    Example
+    -------
+    >>> result = concatenate_last_10_csv_files('data', 'data_concat')
+    >>> result.shape[0] > 0
     True
     """
-    # Obtém uma lista de todos os arquivos na pasta
-    todos_os_arquivos = os.listdir(pasta)
+    # Get a list of all files in the folder
+    all_files = os.listdir(folder)
     
-    # Filtra os arquivos para pegar apenas os CSV e os ordena por data de modificação
-    arquivos_csv = [f for f in todos_os_arquivos if f.endswith('.csv')]
-    sorted_filenames = sorted(arquivos_csv, key=lambda x: int(x[6:10]))
-    # Pega os últimos 5 arquivos CSV
-    ultimos_10_arquivos_csv = sorted_filenames[5:]
+    # Filter files to only get CSV files and sort them by modification date
+    csv_files = [f for f in all_files if f.endswith('.csv')]
+    sorted_filenames = sorted(csv_files, key=lambda x: int(x[6:10]))
     
-    # Inicializa um DataFrame vazio para armazenar os dados concatenados
-    dados_concatenados = pd.DataFrame()
-    # Concatena os arquivos CSV
+    # Get the last 5 CSV files
+    last_10_csv_files = sorted_filenames[5:]
+    
+    # Initialize an empty DataFrame to store the concatenated data
+    concatenated_data = pd.DataFrame()
+    # Concatenate the CSV files
     counter = 0
-    for arquivo_csv in ultimos_10_arquivos_csv:
-        caminho_arquivo = os.path.join(pasta, arquivo_csv)
-        dados = pd.read_csv(caminho_arquivo,encoding='latin1')
-        dados['ANO_COLETA'] = int(ultimos_10_arquivos_csv[counter][6:10])
-        dados_concatenados = pd.concat([dados_concatenados, dados], ignore_index=True)
-        counter +=1
+    for csv_file in last_10_csv_files:
+        file_path = os.path.join(folder, csv_file)
+        data = pd.read_csv(file_path, encoding='latin1')
+        data['COLLECTION_YEAR'] = int(last_10_csv_files[counter][6:10])
+        concatenated_data = pd.concat([concatenated_data, data], ignore_index=True)
+        counter += 1
 
-    dados_concatenados.to_csv(os.path.join(pasta_destino,'SERMIL_5_ANOS.csv'))
-    return dados_concatenados
+    concatenated_data.to_csv(os.path.join(destination_folder, 'SERMIL_5_ANOS.csv'))
+    return concatenated_data
 
-# Executa os testes com doctest
+# Run tests with doctest
 if __name__ == "__main__":
     doctest.testmod()

@@ -56,6 +56,4 @@ def concatenar_ultimos_10_arquivos_csv(pasta,pasta_destino):
 
 # Executa os testes com doctest
 if __name__ == "__main__":
-    resultado = concatenar_ultimos_10_arquivos_csv('data','data_concat')
-    print(resultado.head())
     doctest.testmod()

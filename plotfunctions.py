@@ -25,7 +25,7 @@ def bar_cluster(df, column1, column2, name, xname, yname):
         O gráfico é exibido, não há valor de retorno.
     """
     import pandas as pd
-    import matplotlib as plt
+    import matplotlib.pyplot as plt
 
     plt.figure(figsize=(10, 6))
     

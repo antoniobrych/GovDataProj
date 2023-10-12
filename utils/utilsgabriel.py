@@ -9,7 +9,7 @@ import os
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
-import downloaddata as dd
+from .downloaddata import download_alldata
 
 
 def read_local_data(path: str, dropnull: bool = False,cols: List[str] = None):
@@ -284,7 +284,8 @@ def percentage_value_counts(series):
 def percentage_formatter(x, pos):
     """
     Formata um número como uma string de porcentagem sem casas decimais.
-
+    Recebe a variavel pos, pois para plotar viu se necessario para o FuncFormatter funcionar.
+    
     Parameters
     -----------
     x : float
@@ -308,13 +309,14 @@ def percentage_formatter(x, pos):
     return f'{x*100:.0f}%'
 
 
-#Pasta com os arquivos para esta vis está adicionada no GitHub.
+# Pasta com os arquivos para esta vis está adicionada no GitHub. Basta arrasta-los para a pasta ANALISES.
 def bar_plot_imc():
     '''
-    Funcao que cria a visualizacao para a analise do IMC.
+    Funcao que cria a visualizacao para a analise do IMC. Note que ela 
+    baixa os arquivos para vis caso necessario.
     '''
     # Baixa os dados caso nao estejam baixados localmente(demora pra baixar).
-    dd.download_alldata(['PESO','ALTURA','DISPENSA'])
+    download_alldata(['PESO','ALTURA','DISPENSA'])
 
     # Lista com os dfs de cada ano.
     dfs = save_data_in_list()

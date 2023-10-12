@@ -5,7 +5,7 @@ E outra que baixa todos os csvs necessarios para anlise.
 '''
 
 import os
-from cleandata import process_data,make_http_request
+from .cleandata import process_data,make_http_request
 from typing import List
 
 def download_csv_local(url: str,dropna:bool = False, local_file:str = None ,columns: List[str] = None):

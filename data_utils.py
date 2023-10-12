@@ -142,6 +142,7 @@ def integrity_check(folder:str,begin:int=2012,end:int=2022):
     if  begin == end:
         return True
     return False
+
 # Run tests with doctest
 if __name__ == "__main__":
     doctest.testmod(verbose=True)

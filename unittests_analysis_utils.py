@@ -4,7 +4,6 @@ import pandas as pd
 from analysis_utils import yearly_mean
 
 class TestYearlyMeanFunction(unittest.TestCase):
-    
     def setUp(self):
         # Creating dummy dataframe
         data = {

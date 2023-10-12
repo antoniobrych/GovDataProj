@@ -31,9 +31,11 @@ def bar_cluster(df, column1, column2, name, xname, yname):
     
     # crosstab para contar as ocorrências das colunas desejadas
     tabela_contagem = pd.crosstab(df[column1], df[column2])
-    
+
+    # Cores pras barras
+    colors = ['#123456', '#6d745f']
     #criar plot com essas colunas
-    tabela_contagem.plot(kind='bar')
+    tabela_contagem.plot(kind='bar', color = colors)
     
     plt.title(name)
     plt.xlabel(xname)

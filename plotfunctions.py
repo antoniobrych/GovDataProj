@@ -2,7 +2,7 @@
 
 def bar_cluster(df, column1, column2, name, xname, yname):
     """
-    Gera um gráfico de barras agrupadas.
+    Gera um gráfico de barras agrupadas com os dados das column1 e column2.
 
     Parâmetros
     ----------
@@ -26,7 +26,7 @@ def bar_cluster(df, column1, column2, name, xname, yname):
     """
     import pandas as pd
     import matplotlib as plt
-    
+
     plt.figure(figsize=(10, 6))
     
     # crosstab para contar as ocorrências das colunas desejadas

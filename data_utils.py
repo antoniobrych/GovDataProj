@@ -64,7 +64,8 @@ def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->p
         data['ANO_COLETA'] = int(last_n_csv_files[counter][6:10])
         concatenated_data = pd.concat([concatenated_data, data], ignore_index=True)
         counter += 1
-    concatenated_data.to_csv(os.path.join(destination_folder, 'SERMIL_5_ANOS.csv'))
+    concatenated_data = concatenated_data.dropna(axis='index')
+    concatenated_data.to_csv(os.path.join(destination_folder, 'SERMIL_5_ANOS.csv'),index=False)
     return concatenated_data
 
 def integrity_check(folder:str,begin:int=2012,end:int=2022):

@@ -64,12 +64,7 @@ def take_data(csv_file, columns):
 
     except Exception as e:
         raise Exception(f"Ocorreu um erro ao ler o arquivo CSV: {str(e)}") from e
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True)
-
-
+    
 
 def transform_column(df, coluna, transform_dict):
     import pandas as pd
@@ -125,3 +120,6 @@ def transform_column(df, coluna, transform_dict):
 
     return df
 
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True)

@@ -14,7 +14,7 @@ import datetime as dt
 import os
 import doctest
 
-def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->pd.DataFrame:
+def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=15)->pd.DataFrame:
     """
     Função que concatena os n últimos arquivos csv em uma pasta,
     onde n é um número inteiro escolhido pelo usuário,
@@ -39,20 +39,25 @@ def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->p
 
     Example
     -------
-    >>> result = concatenate_last_n_csv_files('data', 'data_concat',10)
+    >>> result = concatenate_last_n_csv_files('data', 'data_concat',20)
     >>> result.shape[0] > 0
     True
     """
     # Get a list of all files in the folder
 
     all_files = os.listdir(folder)
-    
-    # Filter files to only get CSV files and sort them by modification date
     csv_files = [f for f in all_files if f.endswith('.csv')]
+
+    #Setting the parameter n to a maximum value
+    # Capped to maximum file amount
+
+    # Filter files to only get CSV files and sort them by modification date
     sorted_filenames = sorted(csv_files, key=lambda x: int(x[6:10]))
-    
+    if n > len(csv_files):
+        last_n_csv_files = sorted_filenames
+    else:
     # Get the last n csv fiLes
-    last_n_csv_files = sorted_filenames[n:]
+        last_n_csv_files = sorted_filenames[n:]
     
     # Initialize empty DataFrame to store concat data
     concatenated_data = pd.DataFrame()
@@ -64,7 +69,6 @@ def concatenate_last_n_csv_files(folder:str, destination_folder:str,n:int=10)->p
         data['ANO_COLETA'] = int(last_n_csv_files[counter][6:10])
         concatenated_data = pd.concat([concatenated_data, data], ignore_index=True)
         counter += 1
-    concatenated_data = concatenated_data.dropna(axis='index')
     concatenated_data.to_csv(os.path.join(destination_folder, 'SERMIL_5_ANOS.csv'),index=False)
     return concatenated_data
 

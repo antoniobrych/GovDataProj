@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from data_utils import concatenate_last_n_csv_files, integrity_check
 
-class TestYourFunctions(unittest.TestCase):
+class TestDataUtils(unittest.TestCase):
 
     def setUp(self):
         # Create a temporary directory for testing

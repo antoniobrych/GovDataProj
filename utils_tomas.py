@@ -3,13 +3,41 @@ Este módulo contém funções que fornecem análises estatísticas e visualiza�
 '''
 import unittest
 import pandas as pd
+import importlib
 import numpy as np
 import datetime as dt
 from typing import List, Union
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import doctest
+import io
 import os
+
+def check_libraries() -> List[str]:
+    missing_libraries = []
+    req_lib = [
+    'unittest',
+    'io',
+    'doctest',
+    'pandas',
+    'numpy',
+    'datetime',
+    'typing',
+    'geopandas',
+    'matplotlib',
+    'seaborn',
+    'os'
+]
+    for lib in req_lib:
+        try:
+            importlib.import_module(lib)
+        except ImportError:
+            missing_libraries.append(lib)
+    if missing_libraries:
+        return missing_libraries
+    else:
+        return None
 
 def get_state_coordinates(path: str, dropnull: bool = False) -> gpd.GeoDataFrame:
     '''

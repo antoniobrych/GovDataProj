@@ -7,7 +7,6 @@ class NonexistentColumnsError(Exception):
 
 
 def take_data(csv_file, columns):
-    import pandas as pd
     """
     Parameters
     ----------
@@ -51,6 +50,7 @@ def take_data(csv_file, columns):
     2  Charlie
 
     """
+    import pandas as pd
     try:
         df = pd.read_csv(csv_file, encoding='utf-8')
 
@@ -73,7 +73,6 @@ def take_data(csv_file, columns):
     
 
 def transform_column(df, coluna, transform_dict):
-    import pandas as pd
     """
     Parameters
     ----------

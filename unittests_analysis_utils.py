@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 
-from analysis_utils import yearly_mean
+from analysis_utils import yearly_mean,yearly_aggregate
 
 class TestYearlyMeanFunction(unittest.TestCase):
     def setUp(self):
@@ -39,8 +39,36 @@ class TestYearlyMeanFunction(unittest.TestCase):
         }
         test_df = pd.DataFrame(data)
         result_df = yearly_mean(test_df)
-        print(result_df)
         self.assertEqual(len(result_df), 1)  # One year expected
+"""
+
+========================================
+"""
+class TestYearlyAggregate(unittest.TestCase):
+    def test_yearly_aggregate(self):
+        data = {
+            'VINCULACAO_ANO': [2007,2007, 2008, 2008, 2009],
+            'CINTURA': [None, 80.2, None, 80.1, 80.3],
+            'PESO': [70.0, 70.2, 70.3, 70.5, 70.7],
+            'ALTURA': [170.0, None, 170.3, 170.5, None],
+            'CABECA': [56.0, 56.2, 56.3, 56.5, None]
+        }
+        test_df = pd.DataFrame(data)
+        # Test if function calculate yearly means correctly
+        result_df = yearly_aggregate(test_df)
+        expected_data = {
+            'CINTURA': [1, 1, 1],
+            'PESO': [2, 2, 1],
+            'ALTURA': [1, 2, 0],
+            'TOTAL': [2, 2, 1]
+        }
+
+        expected_index = [2007, 2008, 2009]
+
+        expected_df = pd.DataFrame(expected_data, index=expected_index)
+        result_df = yearly_aggregate(test_df)
+        self.assertEqual(result_df.equals(expected_df), True)  # One year expected
+
 
 if __name__ == '__main__':
     unittest.main()

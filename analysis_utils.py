@@ -1,15 +1,11 @@
 """
-Principal objetivo da minha análise
+Principal objetivo deste módulo:
 
-é estudar a mudança ao longo dos anos nessa base de dados.
+Fornecer funções para facilitar a análise do dataset.
 
-Principalmente Peso, Altura, Tam. Cabeça,Cintura etc.
+Em especial, análise de séries temporais, 
 
-Então, esse módulo contém funções específicas para uma
-
-abordagem de séries temporais nessa base.
-
-Comentários em ingles e doc em portugues.
+onde se deseja estudar a mudança ao longo do tempo.
  
 """
 import pandas as pd
@@ -37,7 +33,7 @@ def yearly_mean(df:pd.DataFrame)->pd.DataFrame:
     >>> yearly_mean_df.shape[0] > 0
     True
     >>> print(yearly_mean_df.head())
-                          CINTURA       PESO      ALTURA     CABECA
+                      CINTURA       PESO      ALTURA     CABECA
     VINCULACAO_ANO                                             
     2007            80.155392  67.364551  173.655000  57.005780
     2008            79.969176  67.569952  173.361765  56.989328
@@ -53,7 +49,6 @@ def yearly_mean(df:pd.DataFrame)->pd.DataFrame:
     
     # Grouping the data year by year, and calculating the mean afterwwards
     selected_df = selected_df.groupby(level='VINCULACAO_ANO').mean()
-    print(selected_df)
     # Return the resulting DataFrame, which contains the yearly mean values.
     return selected_df
 
@@ -76,22 +71,25 @@ def yearly_aggregate(df:pd.DataFrame)->pd.DataFrame:
     >>> df = pd.read_csv('data_concat//SERMIL_5_ANOS.csv',usecols=requested_columns)
     >>> df.shape[0]>0
     True
-    >>> yearly_mean_df = yearly_mean(df)
-    >>> yearly_mean_df.shape[0] > 0
+    >>> yearly_aggregate_df = yearly_aggregate(df)
+    >>> yearly_aggregate_df.shape[0] > 0
     True
-    >>> print(yearly_mean_df.head())
+    >>> print(yearly_aggregate_df.head())
+                    CINTURA    PESO  ALTURA    TOTAL
+    VINCULACAO_ANO                                  
+    2007             344305  304614  311951  1615993
+    2008             326025  317338  319645  1725059
+    2009             328006  327890  327961  1542705
+    2010             340473  340447  340493  1695573
+    2011             362280  362266  362315  1785369
     """
-    
-    selected_df = df[['VINCULACAO_ANO', 'CINTURA', 'PESO', 'ALTURA','CABECA']]
-    #droping NaN values
-    selected_df = selected_df.dropna(axis='index')
-    selected_df = selected_df.set_index('VINCULACAO_ANO')
-    
-    # Grouping the data year by year, and calculating the mean afterwwards
-    selected_df = selected_df.groupby(level='VINCULACAO_ANO').mean()
 
+    synthetic_df = df.copy()
+    synthetic_df['TOTAL'] = synthetic_df['VINCULACAO_ANO'].copy()
+    synthetic_df = synthetic_df[['VINCULACAO_ANO','CINTURA','PESO','ALTURA','TOTAL']].set_index('VINCULACAO_ANO')
+    synthetic_df = synthetic_df.groupby(level='VINCULACAO_ANO').count()
     # Return the resulting DataFrame, which contains the yearly mean values.
-    return selected_df
+    return synthetic_df
 
 if __name__ == "__main__":
     doctest.testmod(verbose=True)

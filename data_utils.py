@@ -1,7 +1,8 @@
 """
 
-Module containing the main functions
-used by my analysis in the project
+Módulo que contém funções úteis para lidar com problemas comuns 
+ao trabalhar com arquivos .csv, 
+como concatenar e verificar integridade.
 
 """
 

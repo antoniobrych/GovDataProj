@@ -43,7 +43,7 @@ def bar_cluster(df, column1, column2, name, xname, yname):
     
     plt.show()
 
-def plot_top_ages_histogram(data, column_name, num_top_ages=5, colors=None):
+def top_ages_histogram(data, column_name, num_top_ages=5, colors=None):
     """
     Gera um histograma das idades mais frequentes em um DataFrame.
 

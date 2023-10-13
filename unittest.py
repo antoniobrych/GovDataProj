@@ -1,12 +1,6 @@
 import unittest
-from utils_henrique import take_data, transform_column
+from utils_henrique import take_data, transform_column, EmptyFileError, NonexistentColumnsError
 import pandas as pd
-
-class EmptyFileError(Exception):
-    pass
-
-class NonexistentColumnsError(Exception):
-    pass
 
 class TestTakeDataFunction(unittest.TestCase):
 
@@ -39,7 +33,6 @@ class TestTakeDataFunction(unittest.TestCase):
         with self.assertRaises(ValueError):
             take_data(csv_file, ['Nome'])
 
-
 class TestTransformColumnFunction(unittest.TestCase):
 
     def test_transform_column_with_valid_data(self):
@@ -64,4 +57,3 @@ class TestTransformColumnFunction(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

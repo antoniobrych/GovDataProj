@@ -125,6 +125,54 @@ def transform_column(df, coluna, transform_dict):
 
     return df
 
+def calculate_age(df, birthyear_column):
+    """
+    Calcula a idade com base no ano de nascimento e cria uma nova coluna.
+
+    Parameters
+    ----------
+    df : pandas.core.frame.DataFrame
+        O DataFrame que contém os dados.
+    birthyear_column : str
+        O nome da coluna que contém o ano de nascimento.
+
+    Returns
+    -------
+    df : pandas.core.frame.DataFrame
+        O DataFrame com a nova coluna de idade.
+
+    Examples
+    --------
+    >>> data = {'Nome': ['Alice', 'Bob', 'Charlie'],
+    ...         'AnoNascimento': [1990, 1985, 1995]}
+    >>> df = pd.DataFrame(data)
+    >>> df = calculate_age_from_birthyear(df, 'AnoNascimento')
+    >>> print(df)
+        Nome  AnoNascimento  Idade
+    0    Alice           1990     32
+    1      Bob           1985     37
+    2  Charlie           1995     27
+
+    """
+    import datetime
+    try:
+        current_year = datetime.now().year
+        df['Idade'] = current_year - df[birthyear_column]
+        return df
+    except KeyError as e:
+        print(f"A coluna '{birthyear_column}' não existe no DataFrame.")
+        return None
+    except Exception as e:
+        print(f"Ocorreu um erro ao calcular a idade: {str(e)}")
+        return None
+    
+
+
+
+
+
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)

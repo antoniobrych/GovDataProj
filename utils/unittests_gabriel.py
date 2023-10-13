@@ -2,7 +2,7 @@
 Modulo para testes das funcoes criadas pelo Gabriel.
 '''
 
-from .utilsgabriel import create_imc, read_local_data, percentage_value_counts, df_allyears
+from .utils_gabriel import create_imc, read_local_data, percentage_value_counts, df_allyears
 import pandas as pd
 from .cleandata import make_http_request, process_data, clean_dataframe
 from .downloaddata import download_csv_local

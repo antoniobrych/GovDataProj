@@ -47,16 +47,13 @@ def yearly_mean(df:pd.DataFrame)->pd.DataFrame:
     """
     
     selected_df = df[['VINCULACAO_ANO', 'CINTURA', 'PESO', 'ALTURA','CABECA']]
-    selected_df_agg = selected_df.groupby(level='VINCULACAO_ANO').count()
-
-    selected_df['TOTAL_ALISTADOS'] = selected_df_agg['']
     #droping NaN values
     selected_df = selected_df.dropna(axis='index')
     selected_df = selected_df.set_index('VINCULACAO_ANO')
     
     # Grouping the data year by year, and calculating the mean afterwwards
     selected_df = selected_df.groupby(level='VINCULACAO_ANO').mean()
-
+    print(selected_df)
     # Return the resulting DataFrame, which contains the yearly mean values.
     return selected_df
 

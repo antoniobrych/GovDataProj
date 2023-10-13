@@ -7,7 +7,7 @@ class TestYearlyMeanFunction(unittest.TestCase):
     def setUp(self):
         # Creating dummy dataframe
         data = {
-            'VINCULACAO_ANO': [2007, 2007, 2008, 2008, 2009],
+            'VINCULACAO_ANO': [2007,2007, 2008, 2008, 2009],
             'CINTURA': [80.0, 80.2, 79.9, 80.1, 80.3],
             'PESO': [70.0, 70.2, 70.3, 70.5, 70.7],
             'ALTURA': [170.0, 170.2, 170.3, 170.5, 170.7],

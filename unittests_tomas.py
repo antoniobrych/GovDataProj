@@ -1,6 +1,8 @@
 import unittest
+import importlib
 import pandas as pd
-from utils_tomas import get_age, get_state_coordinates, merge_height_geography_df,create_height_heatmap,get_stats,create_correlation_matrix,create_age_histogram
+from utils_tomas import get_age, get_state_coordinates, merge_height_geography_df,create_height_heatmap,get_stats,create_correlation_matrix,create_age_histogram,check_libraries
+
 
 class TestMergeData(unittest.TestCase):
     """
@@ -170,6 +172,13 @@ class TestGetStats(unittest.TestCase):
         result = get_stats(test_df,'CABECA')
         self.assertIsNone(result)
 
+    def test_missing_column(self):
+        """
+        Teste com uma coluna inexistente no DataFrame
+        Verifica se a função gera uma exceção KeyError quando a coluna não existe.
+        """
+        with self.assertRaises(KeyError):
+            get_stats(self.df_1, 'COLUNA_INEXISTENTE')
 class TestCorrelationMatrixCreation(unittest.TestCase):
     """
     Classe de teste para a função create_correlation_matrix
@@ -317,8 +326,14 @@ class TestAgeHistogramCreation():
 
     def tearDown(self):
         pass  
+
+class TestCheckLibraries(unittest.TestCase):
+    """
+    Testa se o usuário possui todas as bilbiotecas necessárias instaladas para rodar o programa.
+    """
+    def test_check_libraries(self):
+        missing_libraries = check_libraries()
+        self.assertIsNone(missing_libraries)
     
 if __name__ == '__main__':
     unittest.main()
-
-print(TestMergeData.setUp())

@@ -42,4 +42,44 @@ def bar_cluster(df, column1, column2, name, xname, yname):
     plt.ylabel(yname)
     
     plt.show()
+
+def plot_top_ages_histogram(data, column_name, num_top_ages=5, colors=None):
+    """
+    Gera um histograma das idades mais frequentes em um DataFrame.
+
+    Parâmetros
+    ----------
+    data : pandas.core.frame.DataFrame
+        O DataFrame contendo os dados.
+    column_name : str
+        O nome da coluna que contém as idades.
+    num_top_ages : int, opcional
+        O número de idades mais frequentes a serem exibidas no histograma. O padrão é 5.
+    colors : list, opcional
+        Uma lista de cores personalizadas para as barras. O padrão é None.
+
+    Retorna
+    -------
+    None
+        O gráfico de histograma é exibido, não há valor de retorno.
+
+    """
+
+    import matplotlib.pyplot as plt
+
+    top_ages = data[column_name].value_counts().nlargest(num_top_ages)
+    
+    # Adicionar a categoria "Outros" para idades que não estão no top
+    other_ages_count = data.shape[0] - top_ages.sum()
+    top_ages['Outros'] = other_ages_count
+
+    # Cores padrão para as barras se não forem fornecidas
+    if colors is None:
+        colors = ['b', 'g', 'r', 'c', 'm']
+    
+    top_ages.plot(kind='bar', color=colors)
+    plt.title(f'As {num_top_ages} Idades Mais Frequentes')
+    plt.xlabel('Idade')
+    plt.ylabel('Frequência')
+    plt.show()
     

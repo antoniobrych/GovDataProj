@@ -1,3 +1,3 @@
-from utils import utilsgabriel as ug
+from utils import utils_gabriel as ug
 
 ug.bar_plot_imc()

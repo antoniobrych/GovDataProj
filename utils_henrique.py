@@ -118,8 +118,7 @@ def transform_column(df, coluna, transform_dict):
     """
 
     if coluna not in df.columns:
-        print(f"A coluna '{coluna}' não existe no DataFrame.")
-        return None
+        raise KeyError(f"A coluna '{coluna}' não existe no DataFrame.")
 
     for original, transformado in transform_dict.items():
         df[coluna] = df[coluna].str.replace('.*' + original + '.*', transformado, regex=True)

@@ -1,4 +1,10 @@
 # Funções para preparar o dataframa pra visualização
+class EmptyFileError(Exception):
+    pass
+
+class NonexistentColumnsError(Exception):
+    pass
+
 
 def take_data(csv_file, columns):
     import pandas as pd
@@ -48,14 +54,13 @@ def take_data(csv_file, columns):
     try:
         df = pd.read_csv(csv_file, encoding='utf-8')
 
-        # Verifica se as colunas especificadas existem no DataFrame
-        colunas_existentes = [col for col in columns if col in df.columns]
+        if df.empty:
+            raise EmptyFileError(f"O arquivo CSV '{csv_file}' está vazio.")
 
-        if not colunas_existentes:
-            raise ValueError("Nenhuma das colunas especificadas existe no arquivo CSV.")
+        if not set(columns).issubset(df.columns):
+            raise NonexistentColumnsError("Algumas das colunas especificadas não existem no arquivo CSV.")
 
-        # Cria um novo DataFrame apenas com as colunas desejadas
-        novo_df = df[colunas_existentes]
+        novo_df = df[columns]
 
         return novo_df
 
@@ -64,6 +69,7 @@ def take_data(csv_file, columns):
 
     except Exception as e:
         raise Exception(f"Ocorreu um erro ao ler o arquivo CSV: {str(e)}") from e
+
     
 
 def transform_column(df, coluna, transform_dict):

@@ -22,4 +22,4 @@ data_transf = transform_column(data_frame,"ESCOLARIDADE", transform_dict)
 # Superio --> Todos que completaram ou estão em algum curso superior, pós-graduação, mestrado, doutarado, pós-doutorado ...
 
 # Agora plotamos
-bar_cluster(data_transf)
+bar_cluster(data_transf,"ESCOLARIDADE","DISPENSA","Escolaridade dos alistados","nível de escolaridade","qtd alistados")

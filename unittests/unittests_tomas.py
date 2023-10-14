@@ -1,7 +1,7 @@
 import unittest
 import os
 import pandas as pd
-from utils_tomas import get_age,  merge_height_geography_df, create_height_heatmap, get_stats, create_correlation_matrix, create_age_histogram, get_state_coordinates
+from utils.utils_tomas import get_age,  merge_height_geography_df, create_height_heatmap, get_stats, create_correlation_matrix, create_age_histogram, get_state_coordinates
 from download_data_tomas import check_libraries, download_gpkg_local
 
 # Para conseguir rodar o unittest, é necessário que o path relativo dos arquivos .csv e .gpkg estejam ajustados

@@ -1,5 +1,5 @@
-from Utils_tomas import utils_tomas as ut
-from Utils_tomas import download_data_tomas as ddt
+from utils import utils_tomas as ut
+from utils import download_data_tomas as ddt
 import pandas as pd
 
 

@@ -16,5 +16,6 @@ except FileNotFoundError:
         df = concatenate_last_n_csv_files('data','data_concat')
     except OSError:
         print('Destiny Folder not Defined.')
-
+print(yearly_mean(df).info())
 print(yearly_mean(df).describe())
+print(yearly_aggregate(df))

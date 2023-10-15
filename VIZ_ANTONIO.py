@@ -6,7 +6,7 @@ Analysis: Change of SERMIL statistics over time.
 from analysis_utils import *
 from data_utils import *
 
-# Aattemp to read the concatenated file
+# attempt to read the concatenated file
 try:
     df = pd.read_csv("data_concat//SERMIL_5_ANOS.csv")
 except FileNotFoundError:

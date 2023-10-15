@@ -103,7 +103,7 @@ def transform_column(df, coluna, transform_dict):
     ['Fundamental', 'Médio', 'Superior', 'Mestrado']
 
     # Exemplo 2: Tentar transformar uma coluna que não existe no DataFrame
-    >>> df = pd.read_csv("sermil2022.csv")
+    >>> df = pd.read_csv("sermilH2022.csv")
     >>> transform_column(df,"importante",{"importante":"urgente"})
     A coluna 'importante' não existe no DataFrame.
     

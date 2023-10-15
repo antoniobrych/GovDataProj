@@ -71,3 +71,8 @@ def download_gpkg_local(url: str) -> bool:
             return True
     except:
         return None
+    
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(verbose=True)

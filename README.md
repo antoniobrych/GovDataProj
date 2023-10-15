@@ -26,6 +26,9 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 -  Arraste o conteúdo de `dados_gabriel` para a pasta do repositório clonado GovDataProj,
    (na mesma pasta de `VIZ_GABRIEL.PY`)
 
+-  Arraste o conteúdo de `dados_henrique` para a pasta do repositório clonado GovDataProj,
+   (na mesma pasta de `VIZ_GABRIEL.PY`)
+
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.
 

@@ -11,9 +11,8 @@ df = concatenate_last_n_csv_files('data','data_concat',n=20)
 print(yearly_mean(df).info())
 print(yearly_mean(df).describe())
 print(yearly_aggregate(df))
-import matplotlib.pyplot as plt
-import numpy as np
-synthetic_df = yearly_mean(synthetic_df)
+
+synthetic_df = yearly_mean(df)
 df2_agg_total = yearly_aggregate(df)['TOTAL']
 # Create some data for the plots
 x = synthetic_df.index

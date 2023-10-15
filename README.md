@@ -15,7 +15,7 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 
 1. No e-mail que você recebeu, há um link para um drive que contém a pasta `dados_gabriel`,`dados_antonio`,`dados_tomas`,`dados_henrique`.
 
-[Link do repositório dos Dados](https://drive.google.com/drive/folders/1AfDOguQzAc92mvZ31hJwaTaU2Z2Lgv3D?usp=share_link)
+([Link do repositório dos Dados](https://drive.google.com/drive/folders/1AfDOguQzAc92mvZ31hJwaTaU2Z2Lgv3D?usp=share_link))
 
 2. Baixe as pastas `dados_gabriel`,`dados_antonio`,`dados_tomas`,`dados_henrique` para o seu sistema local.
 

@@ -23,7 +23,7 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
    
 -  Arraste o conteúdo de `dados_antonio` para a pasta `data`, que está no repositório baixado/clonado do GitHub.
   
--  Arraste o conteúdo de `dados_gabriel` para a pasta onde está contido o repositório (GovDataProj), na origem da pasta.
+-  Arraste o conteúdo de `dados_gabriel` para a pasta do repositório clonado GovDataProj, (na mesma pasta de `VIZ_GABRIEL.PY`)
 
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.

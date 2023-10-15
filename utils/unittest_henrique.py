@@ -1,5 +1,5 @@
 import unittest
-from utils_henrique import take_data, transform_column, EmptyFileError, NonexistentColumnsError
+from .utils_henrique import take_data, transform_column, EmptyFileError, NonexistentColumnsError
 import pandas as pd
 
 class TestTakeDataFunction(unittest.TestCase):

@@ -1,4 +1,7 @@
-# Funções para preparar o dataframa pra visualização
+import pandas as pd
+import datetime
+
+# Funções para preparar o dataframe pra visualização
 class EmptyFileError(Exception):
     pass
 
@@ -101,13 +104,8 @@ def transform_column(df, coluna, transform_dict):
     >>> resultado = transform_column(df, 'ESCOLARIDADE', transform_dict)
     >>> list(resultado['ESCOLARIDADE'])  
     ['Fundamental', 'Médio', 'Superior', 'Mestrado']
-
-    # Exemplo 2: Tentar transformar uma coluna que não existe no DataFrame
-    >>> df = pd.read_csv("sermil2022.csv")
-    >>> transform_column(df,"importante",{"importante":"urgente"})
-    A coluna 'importante' não existe no DataFrame.
     
-    # Exemplo 3: Transformar uma coluna vazia com um dicionário vazio
+    # Exemplo 2: Transformar uma coluna vazia com um dicionário vazio
     >>> df = pd.DataFrame({'NOME': []})
     >>> transform_dict = {}
     >>> resultado = transform_column(df, 'NOME', transform_dict)
@@ -145,17 +143,17 @@ def calculate_age(df, birthyear_column):
     >>> data = {'Nome': ['Alice', 'Bob', 'Charlie'],
     ...         'AnoNascimento': [1990, 1985, 1995]}
     >>> df = pd.DataFrame(data)
-    >>> df = calculate_age_from_birthyear(df, 'AnoNascimento')
+    >>> df = calculate_age(df, 'AnoNascimento')
     >>> print(df)
-        Nome  AnoNascimento  Idade
-    0    Alice           1990     32
-    1      Bob           1985     37
-    2  Charlie           1995     27
+          Nome  AnoNascimento  Idade
+    0    Alice           1990     33
+    1      Bob           1985     38
+    2  Charlie           1995     28
 
     """
     import datetime
     try:
-        current_year = datetime.now().year
+        current_year = datetime.datetime.now().year
         df['Idade'] = current_year - df[birthyear_column]
         return df
     except KeyError as e:

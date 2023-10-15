@@ -4,8 +4,8 @@ import pandas as pd
 
 
 ddt.download_gpkg_local("https://geoftp.ibge.gov.br/cartas_e_mapas/bases_cartograficas_continuas/bcim/versao2016/geopackage/bcim_2016_21_11_2018.gpkg")
-geobrazil_df = ut.get_state_coordinates('dados/geo_data.gpkg',True)
-army_df = pd.read_csv('dados/sermil2022.csv')
+geobrazil_df = ut.get_state_coordinates('data/geo_data.gpkg',True)
+army_df = pd.read_csv('data/sermil2022.csv')
 merged_army_height_df = ut.merge_height_geography_df(army_df,"ALTURA","UF_RESIDENCIA",geobrazil_df)
 age_df = ut.get_age(army_df,"ANO_NASCIMENTO")
 

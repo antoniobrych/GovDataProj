@@ -21,7 +21,7 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 
 3. Após baixada as pastas, faça:
    
--  Arraste o conteúdo de `dados_antonio` para a pasta `data`, que está no repositório baixado/clonado do GitHub.
+-  Arraste o conteúdo de `dados_antonio`,`dados_tomas`, para a pasta `data`, que está no repositório baixado/clonado do GitHub.
   
 -  Arraste o conteúdo de `dados_gabriel` para a pasta do repositório clonado GovDataProj,
    (na mesma pasta de `VIZ_GABRIEL.PY`)

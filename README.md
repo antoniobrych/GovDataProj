@@ -35,7 +35,7 @@ A execução se dá por meio dos arquivoz 'VIZ_NomeDoAutor.py'. Cada arquivo dif
 
 ### Documentação
 
-- Toda a documentação do código está hospedada neste site [Link](https://camufladosemdados.netlify.app/)
+- Toda a documentação do código está hospedada neste site ([Link](https://camufladosemdados.netlify.app/))
 
 ### Testes
 

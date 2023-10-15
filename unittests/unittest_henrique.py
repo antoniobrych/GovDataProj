@@ -35,7 +35,7 @@ class TestTransformColumnFunction(unittest.TestCase):
         pd.testing.assert_frame_equal(result, expected)
 
     def test_transform_column_with_nonexistent_column(self):
-        df = pd.read_csv("sermil2022.csv")  # Substitua pelo caminho correto
+        df = pd.read_csv("sermilH2022.csv")  # Substitua pelo caminho correto
         with self.assertRaises(KeyError):
             transform_column(df, "Salário", {"Salário": "Rendimento"})
 

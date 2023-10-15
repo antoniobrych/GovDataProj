@@ -1,7 +1,7 @@
 import unittest
 import os
 import pandas as pd
-from utils.utils_tomas import get_age,  merge_height_geography_df, create_height_heatmap, get_stats, create_correlation_matrix, create_age_histogram, get_state_coordinates
+from utils_tomas import get_age,  merge_height_geography_df, create_height_heatmap, get_stats, create_correlation_matrix, create_age_histogram, get_state_coordinates
 from download_data_tomas import check_libraries, download_gpkg_local
 
 # Para conseguir rodar o unittest, é necessário que o path relativo dos arquivos .csv e .gpkg estejam ajustados
@@ -23,14 +23,13 @@ class TestDownLoadData(unittest.TestCase):
         """
         self.assertTrue(True)
 
-
 class TestExistenceFile(unittest.TestCase):
 
     def setUp(self):
         """
         Prepara a URL necessária para os testes
         """
-        self.local_file_path = "geo_data.gpkg"
+        self.local_file_path = "dados/geo_data.gpkg"
 
     def test_file_is_local(self):
         """
@@ -57,11 +56,11 @@ class TestMergeData(unittest.TestCase):
     def setUp(self):
         """
         Prepara os dados necessários para os testes
-        Carrega o DataFrame 'df_1' do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' do arquivo 'dados/sermil2022.csv'
         Obtém o DataFrame 'df_2' com as coordenadas dos estados
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
-        self.df_2 = get_state_coordinates("geo_data.gpkg", True)
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
+        self.df_2 = get_state_coordinates("dados/geo_data.gpkg", True)
 
     def test_merge_data_correct(self):
         """
@@ -138,12 +137,12 @@ class TestMapHeatmapCreation(unittest.TestCase):
 
     def setUp(self):
         """
-        Carrega o DataFrame 'df_1' a partir do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' a partir do arquivo 'dados/sermil2022.csv'
         Obtém o DataFrame 'df_2' com as coordenadas dos estados
         Realiza a mesclagem de dados no DataFrame 'df_3'
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
-        self.df_2 = get_state_coordinates("geo_data.gpkg", True)
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
+        self.df_2 = get_state_coordinates("dados/geo_data.gpkg", True)
         self.df_3 = merge_height_geography_df(
             self.df_1, 'ALTURA', 'UF_RESIDENCIA', self.df_2)
 
@@ -197,9 +196,9 @@ class TestGetStats(unittest.TestCase):
     def setUp(self):
         """
         Prepara os dados necessários para os testes
-        Carrega o DataFrame 'df_1' do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' do arquivo 'dados/sermil2022.csv'
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
 
     def test_get_stats_data_correct(self):
         """
@@ -246,9 +245,9 @@ class TestCorrelationMatrixCreation(unittest.TestCase):
     def setUp(self):
         """
         Prepara os dados necessários para os testes
-        Carrega o DataFrame 'df_1' a partir do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' a partir do arquivo 'dados/sermil2022.csv'
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
 
     def test_corrmatrix_correct(self):
         """
@@ -301,9 +300,9 @@ class TestGetAge(unittest.TestCase):
     def setUp(self):
         """
         Prepara os dados necessários para os testes
-        Carrega o DataFrame 'df_1' a partir do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' a partir do arquivo 'dados/sermil2022.csv'
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
 
     def test_get_stats_data_correct(self):
         """
@@ -346,10 +345,10 @@ class TestAgeHistogramCreation():
     def setUp(self):
         """
         Prepara os dados necessários para os testes.
-        Carrega o DataFrame 'df_1' a partir do arquivo 'sermil2022.csv'
+        Carrega o DataFrame 'df_1' a partir do arquivo "dados/sermil2022.csv"
         Obtém o DataFrame 'df_2' com idades calculadas a partir do ano de nascimento
         """
-        self.df_1 = pd.read_csv('sermil2022.csv')
+        self.df_1 = pd.read_csv('dados/sermil2022.csv')
         self.df_2 = get_age(self.df_1, 'ANO_NASCIMENTO')
 
     def test_agehist_correct(self):

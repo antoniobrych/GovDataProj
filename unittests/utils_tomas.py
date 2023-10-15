@@ -35,7 +35,7 @@ def get_state_coordinates(path: str, dropnull: bool = False) -> gpd.GeoDataFrame
 
     Example
     -------
-    >>> geobrazil_df = get_state_coordinates("geo_data.gpkg")
+    >>> geobrazil_df = get_state_coordinates("dados/geo_data.gpkg")
     >>> isinstance(geobrazil_df, gpd.GeoDataFrame) or geobrazil_df is None
     True
     '''
@@ -90,8 +90,8 @@ def merge_height_geography_df(army_df: pd.DataFrame, height_colname: str, state_
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
-    >>> geobrazil_df = get_state_coordinates("geo_data.gpkg")
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
+    >>> geobrazil_df = get_state_coordinates("dados/geo_data.gpkg")
     >>> result = merge_height_geography_df(army_df, "ALTURA", "UF_RESIDENCIA", geobrazil_df)
     >>> isinstance(result, pd.DataFrame) or result is None
     True
@@ -164,8 +164,8 @@ def create_height_heatmap(merged_army_height_df: pd.DataFrame, height_colname: s
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
-    >>> geobrazil_df = get_state_coordinates("geo_data.gpkg")
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
+    >>> geobrazil_df = get_state_coordinates("dados/geo_data.gpkg")
     >>> merged_df = merge_height_geography_df(army_df, "ALTURA", "UF_RESIDENCIA", geobrazil_df)
     >>> result = create_height_heatmap(merged_df, "ALTURA", "UF_RESIDENCIA")
     >>> isinstance(result, bool)
@@ -240,7 +240,7 @@ def get_stats(army_df: pd.DataFrame, numeric_colname: str) -> pd.Series:
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
     >>> result = get_stats(army_df, "ALTURA")
     >>> isinstance(result, pd.Series) or result is None
     True
@@ -295,7 +295,7 @@ def create_correlation_matrix(army_df: pd.DataFrame, hum_measures_list: List[str
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
     >>> result = create_correlation_matrix(army_df, ["ALTURA", "CINTURA"])
     >>> isinstance(result, bool)
     True
@@ -368,7 +368,7 @@ def get_age(army_df: pd.DataFrame, birth_date_colname: str) -> pd.DataFrame:
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
     >>> result = get_age(army_df, "ANO_NASCIMENTO")
     >>> isinstance(result, pd.DataFrame) or result is None
     True
@@ -409,7 +409,7 @@ def create_age_histogram(army_age_df: pd.DataFrame) -> bool:
 
     Example
     -------
-    >>> army_df = pd.read_csv('sermil2022.csv')
+    >>> army_df = pd.read_csv('dados/sermil2022.csv')
     >>> army_age_df = get_age(army_df,"ANO_NASCIMENTO")
     >>> result = create_age_histogram(army_age_df)
     >>> isinstance(result, bool)

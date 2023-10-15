@@ -28,4 +28,4 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.
 
-(*Recomendamos fortemente o download dos dados por meio do Drive, demora 'horas' pelo GovDataProj*)
+(*Recomendamos fortemente o download dos dados por meio do Drive, demora __horas__ pelo GovDataProj*)

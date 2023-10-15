@@ -4,9 +4,9 @@
 
 ### Pré-requisitos
 
-Certifique-se de atender aos seguintes pré-requisitos antes de executar o projeto:
+- Libs: Matplotlib, Geopandas, Pandas, Numpy
 
-- Python 3.10.9
+- Download dos dados (abaixo)
 
 ### Download de Dados
 

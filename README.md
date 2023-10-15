@@ -44,7 +44,7 @@ A execução se dá por meio dos arquivoz 'VIZ_NomeDoAutor.py'. Cada arquivo dif
 - Executar os módulos de análise de dados (arquivos .py da pasta `utils`), resultará na execução de DocTests.
 
 ### Análises
-- A análise do conjunto de dados está no Google Docs ([Link]((https://docs.google.com/document/d/11h3DIAgBbidKf0DcFMzSBegB6CcIkP4VHsqBugqTeOs/edit))
+- A análise do conjunto de dados está no Google Docs [Link](https://docs.google.com/document/d/11h3DIAgBbidKf0DcFMzSBegB6CcIkP4VHsqBugqTeOs/edit)
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.
 

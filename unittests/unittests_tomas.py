@@ -16,7 +16,7 @@ class TestExistenceFile(unittest.TestCase):
         """
         Testa se o arquivo está presente localmente.
         """
-        # Verifique se o arquivo local existe.
+        # Verifica se o arquivo local existe.
         if os.path.exists(self.local_file_path):
             self.assertTrue(True)  # Se o arquivo existe, o teste é bem-sucedido.
         else:
@@ -70,7 +70,7 @@ class TestMergeData(unittest.TestCase):
         # Realiza o merge de dataframes com a função 'merge_height_geography_df' usando valores (str) da coluna 'ALTURA'.
         result = merge_height_geography_df(test_df, 'ALTURA', 'UF_RESIDENCIA', self.df_2)
         
-        # Verifica se o resultado é None, indicando que a função funcionou corretamente para valores não numéricos.
+        # Verifica se o a função funcionou corretamente para valores não numéricos.
         self.assertIsNone(result)
 
 
@@ -79,13 +79,12 @@ class TestMergeData(unittest.TestCase):
         Teste com a função merge passando valores nulos para a coluna das Alturas
         Verifica se a função retorna None quando 'ALTURA' contém valores iguais a zero
         """
-        # Cria uma cópia do DataFrame 'df_1' e define o valor da primeira linha da coluna 'ALTURA' como zero.
         test_df = self.df_1.copy()
         test_df.loc[0, 'ALTURA'] = 0
         
         result = merge_height_geography_df(test_df, 'ALTURA', 'UF_RESIDENCIA', self.df_2)
         
-        # Verifica se o resultado é None, indicando que a função tratou corretamente valores iguais a zero.
+        # Verifica se a função tratou corretamente valores iguais a zero.
         self.assertIsNone(result)
 
     def test_height_values_negative(self):
@@ -99,7 +98,7 @@ class TestMergeData(unittest.TestCase):
         
         result = merge_height_geography_df(test_df, 'ALTURA', 'UF_RESIDENCIA', self.df_2)
         
-        # Verifica se o resultado é None, indicando que a função tratou corretamente valores negativos.
+        # Verifica se o a função tratou corretamente valores negativos.
         self.assertIsNone(result)
 
     def test_state_column_existence(self):
@@ -114,7 +113,7 @@ class TestMergeData(unittest.TestCase):
         # Realiza o merge dos dfs com 'merge_height_geography_df' usando a coluna renomeada 'Siglas'.
         result = merge_height_geography_df(test_df, 'ALTURA', 'UF_RESIDENCIA', self.df_2)
         
-        # Verifica se o resultado é None, indicando que a função tratou corretamente a renomeação da coluna.
+        # Verifica se a função tratou corretamente a renomeação da coluna.
         self.assertIsNone(result)
 
     def test_height_column_existence(self):
@@ -189,7 +188,7 @@ class TestMapHeatmapCreation(unittest.TestCase):
         # Chama a função 'create_height_heatmap' com o DataFrame modificado, em que a coluna 'ALTURA' tem valores negativos.
         result = create_height_heatmap(test_df, 'ALTURA', 'UF_RESIDENCIA')
         
-        # Verifica se o resultado é None, indicando que a função tratou corretamente valores negativos.
+        # Verifica se a função tratou corretamente valores negativos.
         self.assertIsNone(result)
 
     def test_state_column_existence(self):
@@ -221,7 +220,6 @@ class TestGetStats(unittest.TestCase):
         Prepara os dados necessários para os testes
         Carrega o DataFrame 'df_1' do arquivo "data/sermil2022.csv"
         """
-        # Carrega o DataFrame 'df_1' a partir do arquivo CSV "sermil2022.csv" no diretório "data".
         self.df_1 = pd.read_csv("data/sermil2022.csv")
 
     def test_get_stats_data_correct(self):
@@ -229,10 +227,9 @@ class TestGetStats(unittest.TestCase):
         Teste com a função que retorna um pd.Series
         Verifica se a função retorna um pd.Series válido
         """
-        # Chama a função 'get_stats' com o DataFrame 'df_1' e a coluna 'ALTURA'.
         result = get_stats(self.df_1, 'ALTURA')
         
-        # Verifica se o resultado é um pd.Series válido (não está vazio).
+        # Verifica se o resultado é um pd.Series não vazio.
         self.assertFalse(result.empty)
 
     def test_numeric_values_zeros(self):
@@ -240,14 +237,13 @@ class TestGetStats(unittest.TestCase):
         Teste com a função, passando valores nulos para a coluna das Alturas
         Verifica se a função retorna None quando 'CINTURA' contém valores iguais a zero
         """
-        # Cria uma cópia do DataFrame 'df_1' e define o valor da primeira linha da coluna 'CINTURA' como zero.
         test_df = self.df_1.copy()
         test_df.loc[0, "CINTURA"] = 0
         
         # Chama a função 'get_stats' com o DataFrame modificado, onde 'CINTURA' contém valores iguais a zero.
         result = get_stats(test_df, 'CINTURA')
         
-        # Verifica se o resultado é None, indicando que a função tratou corretamente valores iguais a zero.
+        # Verifica se a função tratou corretamente valores iguais a zero.
         self.assertIsNone(result)
 
     def test_numeric_values_negative(self):
@@ -255,7 +251,6 @@ class TestGetStats(unittest.TestCase):
         Teste com a função, passando valores negativos para a coluna das Alturas
         Verifica se a função retorna None quando 'CABECA' contém valores negativos
         """
-        # Cria uma cópia do DataFrame 'df_1' e define o valor da primeira linha da coluna 'CABECA' como negativo.
         test_df = self.df_1.copy()
         test_df.loc[0, "CABECA"] = -19
         
@@ -293,10 +288,8 @@ class TestCorrelationMatrixCreation(unittest.TestCase):
         Teste com a função create_correlation_matrix
         Verifica se a função produz uma matriz de correlação válida
         """
-        # Chama a função 'create_correlation_matrix' com o DataFrame 'df_1' e uma lista de colunas ['ALTURA', 'CINTURA', 'CABECA', 'CALCADO'].
         result = create_correlation_matrix(self.df_1, ['ALTURA', 'CINTURA', 'CABECA', 'CALCADO'])
         
-        # Verifica se o resultado é não nulo.
         self.assertTrue(result)
 
     def test_height_values_zeros(self):
@@ -304,7 +297,6 @@ class TestCorrelationMatrixCreation(unittest.TestCase):
         Teste com a função create_correlation_matrix passando valores iguais a zero para a coluna das Alturas
         Verifica se a função retorna None quando 'ALTURA' contém valores iguais a zero
         """
-        # Cria uma cópia do DataFrame 'df_1' e define o valor da primeira linha da coluna 'ALTURA' como zero.
         test_df = self.df_1.copy()
         test_df.loc[0, "ALTURA"] = 0
         
@@ -356,7 +348,6 @@ class TestGetAge(unittest.TestCase):
         Prepara os dados necessários para os testes
         Carrega o DataFrame 'df_1' a partir do arquivo "data/sermil2022.csv"
         """
-        # Carrega o DataFrame 'df_1' a partir do arquivo CSV "sermil2022.csv" no diretório "data".
         self.df_1 = pd.read_csv("data/sermil2022.csv")
 
     def test_get_stats_data_correct(self):
@@ -364,7 +355,6 @@ class TestGetAge(unittest.TestCase):
         Teste com a função que retorna um pd.Series
         Verifica se a função retorna um pd.Series válido
         """
-        # Chama a função 'get_age' com o DataFrame 'df_1' e a coluna 'ANO_NASCIMENTO'.
         result = get_age(self.df_1, 'ANO_NASCIMENTO')
         
         # Verifica se o resultado é um pd.Series válido (não está vazio).

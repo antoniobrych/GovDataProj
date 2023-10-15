@@ -15,7 +15,7 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 
 1. No e-mail que você recebeu, há um link para um drive que contém a pasta `dados_gabriel`,`dados_antonio`,`dados_tomas`,`dados_henrique`.
 
-[Repositório (Google Drive) dos Dados](https://drive.google.com/drive/folders/1AfDOguQzAc92mvZ31hJwaTaU2Z2Lgv3D?usp=share_link)
+[Link do repositório dos Dados](https://drive.google.com/drive/folders/1AfDOguQzAc92mvZ31hJwaTaU2Z2Lgv3D?usp=share_link)
 
 2. Baixe as pastas `dados_gabriel`,`dados_antonio`,`dados_tomas`,`dados_henrique` para o seu sistema local.
 
@@ -29,6 +29,19 @@ Ao executar este projeto, os arquivos de dados serão automaticamente baixados d
 -  Arraste o conteúdo de `dados_henrique` para a pasta do repositório clonado GovDataProj,
    (na mesma pasta de `VIZ_GABRIEL.PY`)
 
+### Execução do Projeto
+
+A execução se dá por meio dos arquivoz 'VIZ_NomeDoAutor.py'. Cada arquivo diferente produzirá uma vizualização diferente.
+
+### Documentação
+
+- Toda a documentação do código está hospedada neste site [Link](https://camufladosemdados.netlify.app/)
+
+### Testes
+
+- A pasta `unittests` contém todos os arquivos de testes unitários.
+
+- Executar os módulos de análise de dados (arquivos .py da pasta `utils`), resultará na execução de DocTests.
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.
 

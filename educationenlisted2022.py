@@ -2,7 +2,7 @@ from utils import utils_henrique as uh
 from utils import plotfunctions as pf
 
 #Pegando as colunas desejadas para a análise
-data_frame = uh.take_data("sermilh2022.csv",["ESCOLARIDADE","DISPENSA"])
+data_frame = uh.take_data("sermilH2022.csv",["ESCOLARIDADE","DISPENSA"])
 
 #criando dicionário para usar como arg em transform_columns
 transform_dict = {

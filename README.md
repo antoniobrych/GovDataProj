@@ -48,4 +48,4 @@ A execução se dá por meio dos arquivoz 'VIZ_NomeDoAutor.py'. Cada arquivo dif
 
 Agora você está pronto para executar o projeto GovDataProj com os dados locais.
 
-(*Recomendamos fortemente o download dos dados por meio do Drive, demora __horas__ pelo portal de acesso do Governo*)
+(*Recomendamos fortemente o download dos dados por meio do Drive, demora __horas__ realizar o download por meio do código*)

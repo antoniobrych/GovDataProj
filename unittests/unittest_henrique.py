@@ -1,5 +1,10 @@
+import sys
+
+# Importante: mudar o path de acordo com a sua máquina, observe que é o path para a pasta utils.
+sys.path.append('C:/Users/B51095/GovDataProj/utils')
+
 import unittest
-from .utils_henrique import take_data, transform_column, EmptyFileError, NonexistentColumnsError
+from utils_henrique import take_data, transform_column, EmptyFileError, NonexistentColumnsError
 import pandas as pd
 
 class TestTakeDataFunction(unittest.TestCase):

@@ -1,9 +1,16 @@
+import sys
+
+# Importante: mudar o path de acordo com a sua máquina, observe que é o path para a pasta utils.
+sys.path.append('C:/Users/B51095/GovDataProj/utils')
+
 import unittest
 import os
 import pandas as pd
+
 # Adicionar um ponto antes do nome do módulo causa um erro na minha máquina quando executo o código.
 from utils_tomas import get_age,  merge_height_geography_df, create_height_heatmap, get_stats, create_correlation_matrix, create_age_histogram, get_state_coordinates
 from download_data_tomas import check_libraries, download_gpkg_local
+
 class TestExistenceFile(unittest.TestCase):
 
     def setUp(self):

@@ -1,11 +1,15 @@
 '''
 Modulo para testes das funcoes criadas pelo Gabriel.
 '''
+import sys
 
-from .utils_gabriel import create_imc, read_local_data, percentage_value_counts, df_allyears
+# Importante: mudar o path de acordo com a sua máquina, observe que é o path para a pasta utils.
+sys.path.append('C:/Users/B51095/GovDataProj/utils')
+
+from utils_gabriel import read_local_data,df_allyears,create_imc,percentage_value_counts
+from cleandata import make_http_request, process_data, clean_dataframe
+from downloaddata import download_csv_local
 import pandas as pd
-from .cleandata import make_http_request, process_data, clean_dataframe
-from .downloaddata import download_csv_local
 import unittest
 import os
 
